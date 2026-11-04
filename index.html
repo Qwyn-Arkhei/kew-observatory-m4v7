@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Observatory">
+<meta name="theme-color" content="#fbf3ee" id="per-themecolor">
+<title>The Observatory</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" id="per-icon" href="apple-touch-icon.png">
+<style>
+:root{
+  --bg:#fbf3ee;--bg2:#f5e4e2;--card:#fffaf6;--ink:#4b3441;--muted:#8f7686;--line:#efd9d6;
+  --rose:#eaa6b8;--rose2:#c8708c;--gold:#b98f45;--goldsoft:#f1e3bf;--sage:#d3e6da;--sage2:#6f9c84;
+  --lav:#e1d8f0;--shadow:0 10px 30px rgba(150,90,110,.13);--onrose:#fff;
+  --serif:"Cormorant Garamond","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --script:"Snell Roundhand","Apple Chancery","Brush Script MT","Segoe Script",cursive;
+  --ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+}
+:root[data-theme="dark"]{
+  --bg:#13112a;--bg2:#1b1838;--card:#221f44;--ink:#efe8f6;--muted:#a99dc2;--line:#34305a;
+  --rose:#d98aa4;--rose2:#f0aac0;--gold:#e6c982;--goldsoft:#4a4230;--sage:#2f4a45;--sage2:#9fd1b9;
+  --lav:#3a3363;--shadow:0 10px 30px rgba(0,0,0,.4);--onrose:#2a1630;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#13112a;--bg2:#1b1838;--card:#221f44;--ink:#efe8f6;--muted:#a99dc2;--line:#34305a;
+    --rose:#d98aa4;--rose2:#f0aac0;--gold:#e6c982;--goldsoft:#4a4230;--sage:#2f4a45;--sage2:#9fd1b9;
+    --lav:#3a3363;--shadow:0 10px 30px rgba(0,0,0,.4);--onrose:#2a1630;
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--serif);font-size:17px;color:var(--ink);line-height:1.38;
+  background:linear-gradient(180deg,var(--bg),var(--bg2)) fixed;min-height:100vh;
+  -webkit-text-size-adjust:100%;
+}
+:root[data-theme="dark"] body{
+  background:
+    radial-gradient(1.5px 1.5px at 12% 18%,rgba(255,244,210,.8) 50%,transparent 52%),
+    radial-gradient(1px 1px at 78% 12%,rgba(255,255,255,.7) 50%,transparent 52%),
+    radial-gradient(1.5px 1.5px at 88% 46%,rgba(255,244,210,.6) 50%,transparent 52%),
+    radial-gradient(1px 1px at 30% 62%,rgba(255,255,255,.6) 50%,transparent 52%),
+    radial-gradient(1px 1px at 60% 82%,rgba(255,244,210,.7) 50%,transparent 52%),
+    linear-gradient(180deg,var(--bg),var(--bg2)) fixed;
+}
+button{font-family:inherit;color:inherit;cursor:pointer}
+.per-petal{position:fixed;top:-30px;width:12px;height:16px;border-radius:70% 0 70% 0;background:var(--rose);opacity:.32;pointer-events:none;z-index:0;animation:per-fall linear infinite}
+@keyframes per-fall{0%{transform:translate3d(0,-30px,0) rotate(0)}50%{transform:translate3d(36px,55vh,0) rotate(200deg)}100%{transform:translate3d(-20px,112vh,0) rotate(400deg)}}
+@media (prefers-reduced-motion:reduce){.per-petal{display:none}}
+.per-flourish{display:flex;align-items:center;gap:10px;margin:0 6px 14px;color:var(--gold);font-size:16px}
+.per-flourish::before,.per-flourish::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.6}
+.per-round svg{display:block;margin:auto}
+.per-glance{display:none;margin-top:8px;font-size:14px;font-family:var(--ui);color:var(--ink);background:var(--lav);border-radius:14px;padding:5px 12px;width:fit-content;max-width:100%}.per-glance.on{display:block}.per-glance b{font-weight:600}
+.per-backup{display:flex;gap:12px;align-items:flex-start;border:1px dashed var(--gold);background:linear-gradient(160deg,var(--card),var(--goldsoft))}.per-backup h2{font-size:21px;margin:0 0 2px}.per-backup p{margin:0 0 6px;font-size:16px}
+
+.per-card.per-sky{background:radial-gradient(120% 90% at 50% 0%,#2b2457 0%,#171436 55%,#0f0d27 100%);color:#f3eaff;border:1px solid #3b3470;padding:14px 12px 16px;overflow:hidden}
+.per-sky .per-skyhead{display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:center}
+.per-sky .per-skyhead h2{color:#f4c9d8;margin:0;font-size:26px}
+.per-sky .per-skyhead small{color:#b9b0dc;font-style:italic;font-size:14px}
+.per-sky .per-skyhead button{width:38px;height:38px;border-radius:50%;border:1px solid #4a4388;background:#201b49;color:#e9defa;font-size:22px;line-height:1;flex:none}
+.per-skysvg{width:100%;height:auto;display:block;margin-top:6px}
+.per-sky .per-skydots{display:flex;justify-content:center;gap:10px;margin-top:2px}
+.per-sky .per-skydot{width:9px;height:9px;padding:0;border-radius:50%;border:1px solid #8c84c8;background:transparent}
+.per-sky .per-skydot.on{background:#ffe3a3;border-color:#ffe3a3}
+.per-sky .per-skycap{text-align:center;color:#c9bfe8;font-size:15px;margin-top:8px;font-style:italic}
+.per-sky .per-skyinfo{margin-top:12px;border-top:1px solid #3b3470;padding-top:12px;text-align:center}
+.per-sky .per-skyinfo b{display:block;font-size:20px;color:#ffe3a3;font-weight:500}
+.per-sky .per-skyinfo span{color:#b9b0dc;font-size:14px}
+.per-sky .per-skyinfo p{white-space:pre-line;font-style:italic;font-size:17px;line-height:1.55;margin:10px 4px;color:#f3eaff}
+.per-sky .per-skyinfo p.per-skyhint{color:#a79fcf;font-size:15px}
+.per-sky .per-skyinfo .per-btn{background:#241f52;border-color:#4a4388;color:#f3eaff}
+.per-tw{animation:per-twk 3.4s ease-in-out infinite}
+.per-pulse{animation:per-pls 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes per-twk{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes per-pls{0%,100%{opacity:.7;transform:scale(.9)}50%{opacity:1;transform:scale(1.15)}}
+@media (prefers-reduced-motion:reduce){.per-tw,.per-pulse{animation:none}}
+.per-remind{display:flex;gap:12px;align-items:flex-start;position:relative;background:linear-gradient(160deg,var(--card),var(--goldsoft));border:1px dashed var(--gold);padding:16px 44px 16px 16px}
+.per-remind.late{background:linear-gradient(160deg,var(--card),var(--lav));border-color:var(--rose2)}
+.per-remind svg{flex:none;margin-top:2px}
+.per-remind h2{font-size:23px;margin:0 0 2px}
+.per-remind p{margin:0 0 6px;font-size:16px}
+.per-remind .per-x{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;border:none;background:transparent;font-size:20px;color:var(--muted)}
+.per-remind .per-btn{margin:2px 0 0;padding:8px 14px;font-size:16px}
+.per-scale{display:flex;gap:8px}
+.per-sc{flex:1;height:38px;border-radius:14px;border:1px solid var(--line);background:var(--bg);font-size:16px}
+.per-sc.on{background:var(--rose2);color:var(--onrose);border-color:transparent}
+.per-scalelab{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-style:italic;margin-top:3px}
+.per-leg{display:flex;gap:14px;font-size:14px;color:var(--muted);margin-top:6px}
+.per-leg i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.per-chart .per-l1{fill:none;stroke:var(--rose2);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.per-chart .per-l2{fill:none;stroke:var(--sage2);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.per-chart .per-d1{fill:var(--rose2)}.per-chart .per-d2{fill:var(--sage2)}
+.per-chart .per-band{fill:var(--rose);opacity:.18}.per-chart .per-gl{stroke:var(--line);stroke-width:1}
+.per-more{margin-top:10px;border-top:1px dashed var(--line);padding-top:4px}
+.per-more summary{cursor:pointer;font-family:var(--script);font-size:24px;color:var(--rose2);list-style:none;padding:6px 0}
+.per-more summary::-webkit-details-marker{display:none}
+.per-more summary::before{content:"❦ ";color:var(--gold)}
+.per-more summary small{font-family:var(--ui);font-size:12px;color:var(--muted);margin-left:6px}
+.per-step{display:flex;align-items:center;gap:10px}
+.per-step button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--bg);font-size:22px;line-height:1}
+.per-step span{min-width:92px;text-align:center;font-size:18px}
+.per-step .per-stepx{width:auto;height:34px;border-radius:16px;padding:0 12px;font-size:14px;color:var(--muted)}
+.per-addmed{display:flex;gap:8px;margin-top:8px}
+.per-addmed input{flex:1;min-width:0;padding:8px 12px;border-radius:16px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-family:inherit;font-size:16px}
+.per-addmed button{padding:8px 14px;border-radius:16px;border:1px solid var(--line);background:var(--card);font-size:15px}
+.per-medrow{display:inline-flex;align-items:center;gap:2px;margin:3px 6px 3px 0;padding:3px 3px 3px 12px;border:1px solid var(--line);border-radius:18px;background:var(--bg);font-size:15px}
+.per-medrow button{border:none;background:transparent;font-size:15px;color:var(--muted);width:28px;height:28px}
+.per-prog{height:10px;border-radius:8px;background:var(--bg);overflow:hidden;margin-top:8px}
+.per-prog i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,var(--sage),var(--sage2))}
+.per-wk{display:grid;grid-template-columns:50px repeat(7,1fr);gap:6px 3px;align-items:end}
+.per-wk .lab{color:var(--muted);font-family:var(--ui);font-size:11px;align-self:center;line-height:1.2}
+.per-wk .lab small{display:block;font-size:9px;opacity:.8}
+.per-wk .dh{text-align:center;color:var(--muted);font-family:var(--ui);font-size:11px;line-height:1.2;cursor:pointer}
+.per-wk .dh.sel{color:var(--rose2);font-weight:700}
+.per-wk .cell{display:flex;flex-direction:column;align-items:center;cursor:pointer}
+.per-wk .bar{height:44px;width:100%;display:flex;align-items:flex-end;justify-content:center}
+.per-wk .bar i{display:block;width:60%;border-radius:6px 6px 3px 3px;background:var(--rose);min-height:2px}
+.per-wk .bar.w i{background:var(--sage2)}
+.per-wk .cell small{font-family:var(--ui);font-size:10px;color:var(--muted);margin-top:2px}
+.per-wk .dot{text-align:center;font-size:13px;color:var(--rose2);cursor:pointer;letter-spacing:1px}
+.per-wk .sel-col{background:var(--lav);border-radius:10px}
+.per-expect{margin:10px 6px 0;font-size:15px;font-style:italic;color:var(--muted)}
+.per-wnote{font-size:13px;color:var(--muted);font-family:var(--ui);margin-top:6px}
+.per-keep{display:block;margin:0 0 6px;border:1px solid var(--line);background:var(--bg);border-radius:16px;padding:7px 14px;font-size:15px;color:var(--ink)}
+.per-search{width:100%;padding:11px 14px;border-radius:18px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-family:inherit;font-size:16px}
+.per-fgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.per-fgrid .per-select{padding:9px 10px;font-size:15px;border-radius:14px}
+.per-fgrid .full{grid-column:1/-1}
+.per-frow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.per-lcard{cursor:pointer;margin-bottom:10px}
+.per-lhead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.per-ldate{font-size:18px;display:block}
+.per-lhead small{color:var(--muted);font-size:14px}
+.per-starbtn{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--bg);font-size:20px;color:var(--gold);line-height:1}
+.per-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.per-tag{padding:3px 10px;border-radius:14px;background:var(--lav);font-size:13px;color:var(--ink)}
+.per-tag.b{background:var(--goldsoft)}
+.per-lnote{margin:8px 0 0;font-size:16px;font-style:italic;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.per-lnote mark,.per-ldate mark{background:var(--goldsoft);color:inherit;border-radius:4px;padding:0 2px}
+@media (max-width:400px){.per-tabs button{font-size:13px}.per-tabs{gap:2px;padding-left:6px;padding-right:6px}}
+.per-poem{font-style:italic;font-size:17px;margin:8px 8px 0;color:var(--ink)}
+.per-love{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:17px;font-style:italic;color:var(--rose2)}
+.per-mooddesc{margin-top:10px;padding:10px 14px;border-radius:16px;background:var(--bg);border:1px dashed var(--rose);font-style:italic;font-size:16px;color:var(--muted);display:none}
+.per-mooddesc.on{display:block}
+.per-moodlist dt{font-family:var(--script);font-size:24px;color:var(--rose2);margin-top:10px}
+.per-moodlist dd{margin:0 0 4px;font-size:17px}
+#per-app{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 10px) 14px calc(env(safe-area-inset-bottom) + 96px)}
+.per-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 4px 10px}
+.per-head h1{font-family:var(--script);font-weight:400;font-size:32px;line-height:1.05;margin:0;color:var(--rose2)}
+.per-head p{margin:2px 0 0;font-style:italic;color:var(--muted);font-size:15px}
+.per-round{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow);font-size:20px;flex:none}
+.per-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:14px 15px;margin-bottom:11px;box-shadow:var(--shadow)}
+.per-card h2{font-family:var(--script);font-weight:400;font-size:25px;margin:0 0 6px;color:var(--rose2)}
+.per-card h3{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:13px 0 7px;font-family:var(--ui);font-weight:600}
+.per-view{display:none}.per-view.on{display:block}
+.per-hero{text-align:center;background:linear-gradient(160deg,var(--card),var(--lav));position:relative;overflow:hidden}
+.per-hero .per-day-n{font-family:var(--script);font-size:38px;color:var(--rose2);line-height:1.1}
+.per-hero .per-phase{font-style:italic;font-size:18px}
+.per-hero .per-small{color:var(--muted);font-size:14px;margin-top:5px}
+.per-hero .per-next{margin-top:10px;padding:8px 12px;border-radius:16px;background:var(--card);border:1px dashed var(--rose);font-size:16px}
+.per-hero .per-orn{position:absolute;right:-10px;top:-14px;font-size:90px;opacity:.12;color:var(--rose2);pointer-events:none}
+.per-calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.per-calhead h2{margin:0;font-size:26px}
+.per-calhead button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:transparent;font-size:24px;line-height:1}
+.per-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.per-dow span{text-align:center;font-size:13px;letter-spacing:.08em;color:var(--muted);font-family:var(--ui);padding:4px 0}
+.per-day{aspect-ratio:1;border-radius:50%;border:1.5px solid transparent;background:transparent;font-size:16px;position:relative;padding:0;min-width:0}
+.per-day.per-flow{background:var(--rose2);color:var(--onrose);opacity:var(--a,1)}
+:root[data-theme="dark"] .per-day.per-flow{background:var(--rose)}
+.per-day.per-pp{border:1.5px dashed var(--rose2)}
+.per-day.per-fert{background:var(--sage)}
+.per-day.per-ov{background:var(--sage);border:1.5px solid var(--gold);box-shadow:0 0 0 2px var(--goldsoft)}
+.per-day.per-today{outline:2px solid var(--gold);outline-offset:1px;font-weight:700}
+.per-day .per-mn{position:absolute;top:3px;left:50%;margin-left:-4.5px;opacity:.7;color:var(--gold);pointer-events:none}.per-day.per-flow .per-mn{color:var(--onrose)}
+.per-day.per-note::after{content:"";position:absolute;bottom:4px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--gold)}
+.per-day.per-flow.per-note::after{background:var(--onrose)}
+.per-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:14px;font-size:14px;color:var(--muted)}
+.per-legend i{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:5px}
+.per-fab{position:fixed;right:max(18px,calc(50% - 262px));bottom:calc(env(safe-area-inset-bottom) + 76px);border:none;border-radius:28px;padding:11px 18px;font-size:17px;background:var(--rose2);color:var(--onrose);box-shadow:0 12px 26px rgba(200,112,140,.4);z-index:5}
+:root[data-theme="dark"] .per-fab{background:var(--rose)}
+.per-tabs{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:6px;padding:8px 12px calc(env(safe-area-inset-bottom) + 8px);background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);z-index:6}
+.per-tabs button{flex:1;max-width:170px;border:none;background:transparent;padding:6px 4px;border-radius:16px;font-size:15px;color:var(--muted)}
+.per-tabs button b{display:block;font-size:18px;font-weight:400;line-height:24px;height:24px;margin-bottom:2px}.per-tabs button b svg{display:block;margin:0 auto}
+.per-ptext{font-style:italic;font-size:18px;line-height:1.6;text-align:center;white-space:pre-line;margin:12px 6px}.per-ptextarea{width:100%;min-height:130px;margin-top:10px;border:1px solid var(--line);border-radius:16px;background:var(--bg);color:var(--ink);font:italic 17px/1.5 var(--serif,inherit);padding:12px}
+.per-tabs button.on{background:var(--lav);color:var(--ink)}
+.per-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.per-stat{border:1px solid var(--line);border-radius:18px;padding:9px;text-align:center;background:var(--bg)}
+.per-stat b{display:block;font-family:var(--script);font-size:30px;font-weight:400;color:var(--rose2);line-height:1.1}
+.per-stat span{font-size:13px;color:var(--muted)}
+.per-bar{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:16px}
+.per-bar em{flex:0 0 112px;font-style:normal}
+.per-bar div{flex:1;height:12px;border-radius:8px;background:var(--bg);overflow:hidden}
+.per-bar div i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,var(--rose),var(--rose2))}
+.per-bar span{flex:0 0 28px;text-align:right;color:var(--muted);font-size:14px}
+.per-hist{list-style:none;margin:0;padding:0}
+.per-hist li{padding:8px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px}
+.per-hist li:last-child{border:none}
+.per-hist small{color:var(--muted);font-size:14px}
+.per-note-t{color:var(--muted);font-size:15px;font-style:italic}
+.per-chart text{font-family:var(--ui);font-size:10px;fill:var(--muted)}
+.per-chart .per-b{fill:var(--rose)}.per-chart .per-avg{stroke:var(--gold);stroke-dasharray:4 4;stroke-width:1.2}
+.per-btn{display:inline-block;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:9px 14px;font-size:16px;margin:4px 6px 4px 0}
+.per-btn.main{background:var(--rose2);color:var(--onrose);border-color:transparent}
+:root[data-theme="dark"] .per-btn.main{background:var(--rose)}
+.per-btn.danger.arm{background:#b24a5d;color:#fff;border-color:#b24a5d}
+.per-btn.danger{color:#b24a5d;border-color:#d9a0aa}
+.per-seg{display:flex;gap:6px;flex-wrap:wrap}
+.per-seg button{flex:1;min-width:70px;padding:10px 8px;border-radius:16px;border:1px solid var(--line);background:var(--card);font-size:16px}
+.per-seg button.on{background:var(--lav);border-color:var(--rose);font-weight:600}
+.per-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0}
+.per-row label{flex:1}
+.per-row small{display:block;color:var(--muted);font-size:14px}
+.per-row input[type=number]{width:74px;text-align:center;font-size:20px;font-family:inherit;padding:8px;border-radius:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.per-select{width:100%;padding:12px;font-size:18px;font-family:inherit;border-radius:16px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.per-guide{margin-top:12px;font-size:17px}.per-guide p{margin:0 0 10px}
+.per-guide ul{padding-left:20px;margin:0 0 10px}
+#per-sheet-bg{position:fixed;inset:0;background:rgba(40,20,45,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:20}
+#per-sheet{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:0 auto;background:var(--card);border-radius:30px 30px 0 0;padding:18px 18px calc(env(safe-area-inset-bottom) + 22px);max-height:90vh;overflow:auto;transform:translateY(105%);transition:transform .3s ease;z-index:21;box-shadow:0 -12px 40px rgba(0,0,0,.25)}
+body.per-sheet-open #per-sheet{transform:none}
+body.per-sheet-open #per-sheet-bg{opacity:1;pointer-events:auto}
+#per-sheet h2{font-family:var(--script);font-weight:400;font-size:30px;color:var(--rose2);margin:0}
+#per-sheet .per-sub{color:var(--muted);font-style:italic;margin-bottom:6px}
+.per-chips{display:flex;flex-wrap:wrap;gap:8px}
+.per-chip{border:1px solid var(--line);background:var(--bg);border-radius:18px;padding:6px 12px;font-size:15px}
+.per-chip.on{background:var(--rose);color:var(--onrose);border-color:transparent}
+:root[data-theme="dark"] .per-chip.on{background:var(--rose);color:#2a1630}
+.per-chip.dis{opacity:.4;pointer-events:none}
+#per-sheet textarea{width:100%;min-height:90px;border-radius:18px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-family:inherit;font-size:18px;padding:12px;resize:vertical}
+.per-sheetbtns{display:flex;gap:10px;margin-top:16px}
+.per-sheetbtns button{flex:1;padding:14px;border-radius:20px;border:1px solid var(--line);background:var(--bg);font-size:18px}
+.per-sheetbtns .main{background:var(--rose2);color:var(--onrose);border:none}
+:root[data-theme="dark"] .per-sheetbtns .main{background:var(--rose);color:#2a1630}
+#per-lock{position:fixed;inset:0;z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#1b1838,#3a2350);color:#f4ecf7;text-align:center;padding:20px}
+#per-lock.on{display:flex}
+#per-lock h2{font-family:var(--script);font-weight:400;font-size:36px;margin:0 0 4px;color:#f0aac0}
+#per-lock p{margin:0 0 18px;font-style:italic;color:#cbbfe0}
+.per-dots{display:flex;gap:14px;margin-bottom:22px}
+.per-dots i{width:16px;height:16px;border-radius:50%;border:1.5px solid #f0aac0}
+.per-dots i.f{background:#f0aac0}
+.per-pad{display:grid;grid-template-columns:repeat(3,76px);gap:14px}
+.per-pad button{height:76px;border-radius:50%;border:1px solid rgba(240,170,192,.4);background:rgba(255,255,255,.06);color:#fff;font-size:28px}
+.per-pad .ghost{visibility:hidden}
+#per-lock .per-cancel{margin-top:18px;background:none;border:none;color:#cbbfe0;font-size:17px;text-decoration:underline}
+.per-shake{animation:per-shake .4s}
+@keyframes per-shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+#per-toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 150px);transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:20px;font-size:16px;opacity:0;pointer-events:none;transition:.3s;z-index:60;max-width:90%;text-align:center}
+#per-toast.on{opacity:1;transform:translateX(-50%)}
+#per-print{display:none}
+#per-sum{position:fixed;inset:0;z-index:30;background:linear-gradient(180deg,var(--bg),var(--bg2));overflow:auto;display:none;padding:calc(env(safe-area-inset-top) + 10px) 12px calc(env(safe-area-inset-bottom) + 24px)}
+#per-sum.on{display:block}
+.per-sum-wrap{max-width:560px;margin:0 auto}
+.sd{background:#fff;color:#3a2a33;font-family:Georgia,"Times New Roman",serif;font-size:14px;line-height:1.45;padding:18px 16px;border-radius:14px;box-shadow:var(--shadow)}
+.sd h1{font-size:26px;margin:0;color:#8c3d5e;font-weight:600;text-align:center}
+.sd .sd-sub{text-align:center;font-style:italic;color:#7a6470;font-size:13px;margin:4px 0 6px}
+.sd hr{border:none;border-top:2px solid #c9a45c;margin:10px 0 12px}
+.sd h3{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:#8c3d5e;margin:16px 0 6px;font-family:Arial,Helvetica,sans-serif;font-weight:700}
+.sd table{width:100%;border-collapse:collapse;margin:4px 0 8px}
+.sd th,.sd td{border-bottom:1px solid #e8d3d6;padding:5px 5px;text-align:left;font-size:13px;vertical-align:top}
+.sd th{color:#8c3d5e;font-weight:700}
+.sd td.k{color:#7a6470;width:42%}
+.sd tr{page-break-inside:avoid}
+.sd ul{margin:4px 0 8px;padding-left:20px}.sd li{margin:3px 0}
+.sd p{margin:4px 0}
+.sd .sd-line{border-bottom:1px solid #b9a2aa;height:26px}
+.sd .sd-foot{margin-top:16px;font-size:12px;color:#8a7480;font-style:italic;text-align:center}
+.sd .sd-scroll{overflow-x:auto}
+@media print{
+  @page{margin:14mm}
+  body>*:not(#per-print){display:none!important}
+  body{background:#fff!important}
+  #per-print{display:block!important}
+  #per-print .sd{box-shadow:none;border-radius:0;padding:0}
+}
+</style>
+</head>
+<body>
+<div id="per-app">
+  <header class="per-head">
+    <div>
+      <h1>The Observatory</h1>
+      <p>a private keeping of moons, blooms &amp; stars</p>
+      <div class="per-glance" id="per-glance"></div>
+    </div>
+    <button class="per-round" id="per-quicktheme" aria-label="Switch between daylight and moonlit"></button>
+  </header>
+  <div class="per-flourish" aria-hidden="true">❦</div>
+
+  <section class="per-view on" id="per-v-almanac">
+    <div id="per-remind"></div>
+    <div id="per-backup"></div>
+    <div class="per-card per-hero" id="per-hero"></div>
+    <div class="per-card">
+      <div class="per-calhead">
+        <button id="per-prev" aria-label="Previous month">‹</button>
+        <h2 id="per-month"></h2>
+        <button id="per-next" aria-label="Next month">›</button>
+      </div>
+      <div class="per-grid per-dow" id="per-dow"></div>
+      <div class="per-grid" id="per-grid"></div>
+      <div class="per-legend">
+        <span><i style="background:var(--rose2)"></i>Bloom</span>
+        <span><i style="border:1.5px dashed var(--rose2)"></i>Expected bloom</span>
+        <span><i style="background:var(--sage)"></i>Fertile glow</span>
+        <span><i style="background:var(--sage);border:1.5px solid var(--gold)"></i>Ovulation</span>
+        <span><i style="background:var(--gold);width:7px;height:7px"></i>Has a letter</span>
+        <span><svg viewBox="0 0 12 12" width="11" height="11" style="color:var(--gold)" aria-hidden="true"><circle cx="6" cy="6" r="4.6" fill="none" stroke="currentColor" stroke-width="1"/><path d="M6 1.4a4.6 4.6 0 0 1 0 9.2z" fill="currentColor"/></svg> Moon phases</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="per-view" id="per-v-well"></section>
+  <section class="per-view" id="per-v-letters"></section>
+  <section class="per-view" id="per-v-stars"></section>
+  <section class="per-view" id="per-v-book"></section>
+</div>
+
+<button class="per-fab" id="per-fab">✎ Write today's letter</button>
+
+<nav class="per-tabs">
+  <button data-tab="almanac" class="on"><b><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6.6" rx="2.5" ry="3.7" transform="rotate(0 12 12)"/><ellipse cx="12" cy="6.6" rx="2.5" ry="3.7" transform="rotate(72 12 12)"/><ellipse cx="12" cy="6.6" rx="2.5" ry="3.7" transform="rotate(144 12 12)"/><ellipse cx="12" cy="6.6" rx="2.5" ry="3.7" transform="rotate(216 12 12)"/><ellipse cx="12" cy="6.6" rx="2.5" ry="3.7" transform="rotate(288 12 12)"/><circle cx="12" cy="12" r="1.4"/></svg></b>Almanac</button>
+  <button data-tab="well"><b><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10.2A4.2 4.2 0 0 1 12 7.3a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></svg></b>Wellness</button>
+  <button data-tab="letters"><b><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="3.5"/><path d="M3.8 7.6 12 13.2l8.2-5.6"/></svg></b>Letters</button>
+  <button data-tab="stars"><b><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c.8 4.6 2.4 8.2 9 9-6.6.8-8.2 4.4-9 9-.8-4.6-2.4-8.2-9-9 6.6-.8 8.2-4.4 9-9z"/></svg></b>Stars</button>
+  <button data-tab="book"><b><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7 4.6 4 5v13c3-.4 6 0 8 1.5 2-1.5 5-1.9 8-1.5V5c-3-.4-6 0-8 1.5z"/><path d="M12 6.5v13"/></svg></b>Book</button>
+</nav>
+
+<div id="per-sheet-bg"></div>
+<div id="per-sheet" role="dialog" aria-modal="true"></div>
+
+<div id="per-lock">
+  <h2 id="per-lock-t">The Veil</h2>
+  <p id="per-lock-s">Whisper your four-digit secret</p>
+  <div class="per-dots" id="per-dots"><i></i><i></i><i></i><i></i></div>
+  <div class="per-pad" id="per-pad"></div>
+  <button class="per-cancel" id="per-lock-cancel" style="display:none">Never mind</button>
+</div>
+
+<div id="per-sum" role="dialog" aria-modal="true"></div>
+<div id="per-print"></div>
+<div id="per-toast"></div>
+<input type="file" id="per-file" accept="application/json,.json" hidden>
+
+<script>
+(function(){
+'use strict';
+var K='per_data_v1';
+function $(s){return document.querySelector(s)}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function pad(n){return String(n).padStart(2,'0')}
+function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function parse(s){var p=s.split('-').map(Number);return new Date(p[0],p[1]-1,p[2],12)}
+function add(s,n){var d=parse(s);d.setDate(d.getDate()+n);return iso(d)}
+function diff(a,b){return Math.round((parse(b)-parse(a))/864e5)}
+function today(){return iso(new Date())}
+function fmt(s,o){return parse(s).toLocaleDateString('en-US',o||{month:'short',day:'numeric'})}
+function fmtLong(s){return fmt(s,{weekday:'long',month:'long',day:'numeric'})}
+
+var DEF={v:1,days:{},set:{cycle:28,period:5,luteal:14,weekStart:0,remind:true,remindDays:3,sound:true,intimacy:false,sleepGoal:8,waterGoal:8,backupDays:14},theme:'auto',pin:null,remDismiss:'',remSound:'',poems:{},lastBackup:'',firstUse:'',bkSnooze:'',mySyms:[],cv:3,meds:['Pain reliever','Iron','Vitamins','Magnesium'],skinSteps:['Cleanser','Toner','Serum','Moisturizer','Sunscreen','Eye cream','Mask','Exfoliant','Retinol','Spot treatment']};
+var migrated=false;
+function migrate(days,cv){
+  cv=cv||0;
+  if(cv<2)stripOldZeros(days);
+  if(cv<3)Object.keys(days).forEach(function(k){var e=days[k];if(e&&e.flow===1){e.flow=0;if(!e.dis)e.dis='Spotting'}});
+}
+function stripOldZeros(days){Object.keys(days).forEach(function(k){if(days[k]&&days[k].cramps===0)delete days[k].cramps})}
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function load(){
+  try{
+    var r=JSON.parse(localStorage.getItem(K));
+    if(r&&r.days){var d=clone(DEF);d.days=r.days;d.set=Object.assign(d.set,r.set||{});d.theme=r.theme||'auto';d.pin=r.pin||null;d.remDismiss=r.remDismiss||'';d.remSound=r.remSound||'';d.poems=(r.poems&&typeof r.poems==='object')?r.poems:{};d.lastBackup=r.lastBackup||'';d.firstUse=r.firstUse||'';d.bkSnooze=r.bkSnooze||'';if(Array.isArray(r.mySyms))d.mySyms=r.mySyms;if(Array.isArray(r.meds))d.meds=r.meds;if(Array.isArray(r.skinSteps))d.skinSteps=r.skinSteps;if(r.cv!==3){migrate(d.days,r.cv);migrated=true}d.cv=3;return d}
+  }catch(e){}
+  return clone(DEF);
+}
+var S=load();
+if(!S.firstUse){S.firstUse=iso(new Date());try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+function save(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){toast('Could not save. Storage may be full or blocked.')}}
+
+var toastT;
+function toast(m){var t=$('#per-toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on')},2400)}
+
+/* ---------- theme ---------- */
+function applyTheme(){
+  var r=document.documentElement;
+  if(S.theme==='light'||S.theme==='dark')r.setAttribute('data-theme',S.theme);else r.removeAttribute('data-theme');
+  var dark=S.theme==='dark'||(S.theme==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);
+  $('#per-themecolor').setAttribute('content',dark?'#13112a':'#fbf3ee');
+  var q=$('#per-quicktheme');
+  q.innerHTML=dark?ICON_MOON:ICON_SUN;
+  q.title=dark?'Moonlit — tap for daylight':'Daylight — tap for moonlit';
+}
+var ICON_SUN='<svg viewBox="0 0 28 28" width="28" height="28" fill="none" stroke-linecap="round" aria-hidden="true"><circle cx="14" cy="14" r="5" fill="#f6dc9a" stroke="#b98f45" stroke-width="1.5"/><g stroke="#c9a04e" stroke-width="1.6"><path d="M14 2.5v3M14 22.5v3M2.5 14h3M22.5 14h3"/><path d="M6 6l2 2M20 20l2 2M6 22l2-2M20 8l2-2" stroke-width="1.3"/></g><circle cx="14" cy="14" r="2" fill="#fff8e1" stroke="none"/></svg>';
+var ICON_MOON='<svg viewBox="0 0 28 28" width="28" height="28" fill="none" aria-hidden="true"><path d="M22.5 17.2A9.5 9.5 0 0 1 11 5.5a9.5 9.5 0 1 0 11.5 11.7z" fill="#f4e3b0" stroke="#e6c982" stroke-width="1.3" stroke-linejoin="round"/><path d="M21 3.5l.8 1.9 1.9.8-1.9.8-.8 1.9-.8-1.9-1.9-.8 1.9-.8z" fill="#e6c982"/><circle cx="24.5" cy="11" r=".9" fill="#e6c982"/></svg>';
+$('#per-quicktheme').onclick=function(){
+  var dark=document.documentElement.getAttribute('data-theme')==='dark'||(S.theme==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);
+  S.theme=dark?'light':'dark';save();applyTheme();
+};
+
+/* ---------- cycle logic ---------- */
+function periods(){
+  var ds=Object.keys(S.days).filter(function(d){return S.days[d].flow>0}).sort();
+  var out=[];
+  ds.forEach(function(d){
+    var last=out[out.length-1];
+    if(last&&diff(last.end,d)<=3){last.end=d}else out.push({start:d,end:d});
+  });
+  return out;
+}
+function avg(a){return a.length?Math.round(a.reduce(function(x,y){return x+y},0)/a.length):null}
+function analyse(){
+  var P=periods(),cyc=[];
+  for(var i=1;i<P.length;i++)cyc.push({from:P[i-1].start,len:diff(P[i-1].start,P[i].start)});
+  var good=cyc.filter(function(c){return c.len>=15&&c.len<=90});
+  var lens=good.slice(-6).map(function(c){return c.len});
+  var pls=P.map(function(p){return diff(p.start,p.end)+1}).slice(-6);
+  return {P:P,cyc:cyc,good:good,lens:lens,avgC:avg(lens),avgP:avg(pls)};
+}
+function predictions(A){
+  if(!A.P.length)return null;
+  var cl=A.avgC||S.set.cycle,pl=A.avgP||S.set.period,lu=S.set.luteal;
+  var last=A.P[A.P.length-1],list=[];
+  for(var k=1;k<=12;k++){
+    var start=add(last.start,cl*k),ov=add(start,-lu);
+    list.push({start:start,ov:ov,f1:add(ov,-5),f2:add(ov,1)});
+  }
+  var spread=A.lens.length>1?[Math.min.apply(null,A.lens),Math.max.apply(null,A.lens)]:null;
+  return {cl:cl,pl:pl,lu:lu,last:last,list:list,spread:spread};
+}
+function markers(pr){
+  var m={};if(!pr)return m;var t=today();
+  pr.list.forEach(function(c){
+    var d;
+    for(d=c.f1;d<=c.f2;d=add(d,1)){if(d>=t)m[d]='fert'}
+    if(c.ov>=t)m[c.ov]='ov';
+    for(var i=0;i<pr.pl;i++){d=add(c.start,i);if(d>=t)m[d]='pp'}
+  });
+  return m;
+}
+
+/* ---------- hero ---------- */
+function renderHero(){
+  var el=$('#per-hero'),A=analyse(),pr=predictions(A),t=today();
+  var orn='<div class="per-orn">❀</div>';
+  if(!pr){
+    el.innerHTML=orn+'<div class="per-day-n">Welcome, dearest</div><div class="per-phase">Your almanac awaits its very first letter</div><div class="per-small">Tap a day below to press your first bloom, like a flower between pages. With every moon I shall learn your rhythm a little better.</div><div class="per-love">'+loveNote()+'</div>';
+    return;
+  }
+  var last=pr.last;
+  if(last.start>t){
+    el.innerHTML=orn+'<div class="per-day-n">A bloom is marked</div><div class="per-phase">Beginning '+esc(fmtLong(last.start))+'</div>';
+    return;
+  }
+  var cd=diff(last.start,t)+1,next=pr.list[0],until=diff(t,next.start);
+  var inBloom=(S.days[t]&&S.days[t].flow>0)||cd<=pr.pl;
+  var phase,plain,poem;
+  if(inBloom){phase='Bloom';plain='menstrual phase';poem='Rest, dear heart. Be gentle with yourself, and let the world wait.'}
+  else if(t>=next.f1&&t<=next.f2){
+    if(t===next.ov){phase='Ovulation day';plain='estimated';poem='The brightest bloom of the whole moon, and she is you.'}else{phase='Fertile glow';plain='fertile window, estimated';poem='A golden glow upon the garden; you are luminous today.'}
+  }else if(t<next.f1){phase='Awakening';plain='follicular phase';poem='Fresh as morning dew, the garden stirs and begins to dream.'}
+  else{phase='Quiet moon';plain='luteal phase';poem='Draw the curtains, light a candle, and tend your tender heart.'}
+  var line;
+  if(until>1)line='Next bloom expected in <b>'+until+' days</b><br><small>around '+esc(fmtLong(next.start))+'</small>';
+  else if(until===1)line='Next bloom expected <b>tomorrow</b>';
+  else if(until===0)line='Next bloom expected <b>today</b>';
+  else line='Your bloom was expected <b>'+(-until)+' day'+(until===-1?'':'s')+' ago</b><br><small>Tap a day to log it when it arrives</small>';
+  var h=orn+'<div class="per-small">This moon</div><div class="per-day-n">Day '+cd+'</div><div class="per-phase">'+phase+' <span class="per-small">· '+plain+'</span></div><div class="per-poem">'+poem+'</div>';
+  h+='<div class="per-next">'+line+'</div>';
+  if(t<=next.f2){
+    h+='<div class="per-small">Fertile glow ~ '+esc(fmt(next.f1))+' – '+esc(fmt(next.f2))+' · ovulation ~ '+esc(fmt(next.ov))+'</div>';
+  }
+  if(pr.spread&&pr.spread[1]-pr.spread[0]>0)h+='<div class="per-small">Your recent moons have run '+pr.spread[0]+'–'+pr.spread[1]+' days</div>';
+  var ex1=expectToday(A,pr);if(ex1)h+='<div class="per-expect">'+ex1+'</div>';
+  h+='<div class="per-love">'+loveNote()+'</div>';
+  h+='<div class="per-small" style="font-size:13px;margin-top:10px">Estimates only. Not a method of contraception.</div>';
+  el.innerHTML=h;
+}
+var LOVE=['You are allowed to bloom slowly.','Your body keeps time like the tides, and it is beautiful.','Today, be as kind to yourself as you are to those you love.','Even the moon rests in her darkest hours.','A garden is not rushed, and neither are you.','Softness is its own kind of strength.','You are a love letter the universe wrote to itself.','Wherever you are in your moon, you are exactly on time.','Let the small joys find you today: tea, sunlight, a favourite song.','Tender hearts are the bravest of all.','You deserve rest without apology.','Every phase of you is worth adoring.'];
+function loveNote(){var d=new Date(),n=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);return '❦ '+LOVE[n%LOVE.length]}
+
+/* ---------- chimes ---------- */
+var AC=null,pendingChime=null;
+function audioCtx(){try{if(!AC){var C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C()}}catch(e){}return AC}
+function tone(f,t0,d,type,vol){
+  var ctx=AC,o=ctx.createOscillator(),g=ctx.createGain();
+  o.type=type;o.frequency.value=f;
+  g.gain.setValueAtTime(0.0001,t0);g.gain.exponentialRampToValueAtTime(vol,t0+0.012);g.gain.exponentialRampToValueAtTime(0.0001,t0+d);
+  o.connect(g);g.connect(ctx.destination);o.start(t0);o.stop(t0+d+0.05);
+}
+function chime(kind){
+  var ctx=audioCtx();if(!ctx)return;
+  var t=ctx.currentTime+0.05;
+  if(kind==='near'){
+    /* two soft rising music-box notes */
+    tone(1318.5,t,1.1,'sine',.18);tone(2637,t,.5,'sine',.04);
+    tone(1568,t+.3,1.4,'sine',.18);tone(3136,t+.3,.5,'sine',.04);
+  }else if(kind==='today'){
+    /* bright rising arpeggio */
+    [1046.5,1318.5,1568,2093].forEach(function(f,i){tone(f,t+i*.16,1.0,'triangle',.15);tone(f*2,t+i*.16,.35,'sine',.04)});
+  }else if(kind==='late'){
+    /* low, gentle, falling pair */
+    tone(659.3,t,1.7,'sine',.2);tone(329.6,t,1.7,'sine',.08);
+    tone(523.3,t+.45,2.0,'sine',.2);tone(261.6,t+.45,2.0,'sine',.08);
+  }
+}
+function playNow(kind,done){
+  var ctx=audioCtx();if(!ctx)return;
+  var go=function(){chime(kind);if(done)done()};
+  if(ctx.state==='running')go();else{try{ctx.resume().then(go).catch(function(){})}catch(e){}}
+}
+function previewChime(kind){playNow(kind)}
+function maybeChime(kind){
+  if(!S.set.sound||S.remSound===today()+'|'+kind)return;
+  pendingChime=kind;
+  if(AC&&AC.state==='running')firePending();
+}
+function firePending(){
+  if(!pendingChime)return;
+  var k=pendingChime;pendingChime=null;
+  if(!S.set.sound)return;
+  playNow(k,function(){S.remSound=today()+'|'+k;save()});
+}
+['click','touchend'].forEach(function(ev){document.addEventListener(ev,function(){if(pendingChime)firePending()},{passive:true})});
+
+/* ---------- gentle reminders ---------- */
+var BELL='<svg viewBox="0 0 28 28" width="30" height="30" fill="none" aria-hidden="true"><path d="M14 4.5c-4 0-6.5 3-6.5 7v4L5 19h18l-2.5-3.5v-4c0-4-2.5-7-6.5-7z" fill="#f6dc9a" stroke="#b98f45" stroke-width="1.4" stroke-linejoin="round"/><path d="M11.5 21.5a2.6 2.6 0 0 0 5 0" stroke="#b98f45" stroke-width="1.4" stroke-linecap="round"/><circle cx="14" cy="3.6" r="1.2" fill="#b98f45"/></svg>';
+
+function bkRef(){return S.lastBackup||S.firstUse||''}
+function renderGlance(){
+  var el=$('#per-glance');if(!el)return;
+  var A=analyse(),pr=predictions(A),t=today();el.className='per-glance';el.innerHTML='';
+  if(!pr||pr.last.start>t)return;
+  var cd=diff(pr.last.start,t)+1,next=pr.list[0],until=diff(t,next.start),ph;
+  var inBloom=(S.days[t]&&S.days[t].flow>0)||cd<=pr.pl;
+  if(inBloom)ph='Bloom';else if(t>=next.f1&&t<=next.f2)ph=(t===next.ov)?'Ovulation day':'Fertile glow';else if(t<next.f1)ph='Awakening';else ph='Quiet moon';
+  var nb=until>1?'bloom in '+until+' days':(until===1?'bloom tomorrow':(until===0?'bloom due today':'bloom '+(-until)+'d late'));
+  el.innerHTML='Day <b>'+cd+'</b> · '+ph+' · '+nb;el.className='per-glance on';
+}
+function renderBackup(){
+  var el=$('#per-backup');if(!el)return;el.innerHTML='';
+  var n=S.set.backupDays;if(!n)return;
+  var t=today();
+  if(!Object.keys(S.days).length||S.bkSnooze>t)return;
+  var ref=bkRef();if(!ref)return;
+  var ago=diff(ref,t);if(ago<n)return;
+  var msg=S.lastBackup?'It has been '+ago+' days since your last keepsake backup.':'You have been writing here for '+ago+' days, and no backup has been saved yet.';
+  el.innerHTML='<div class="per-card per-backup"><div><h2>A little keepsake?</h2><p>'+msg+' Clearing website data would erase the almanac, so a copy kept in Files is a gentle safeguard.</p><button class="per-btn main" data-bk="save">Save a backup</button><button class="per-btn" data-bk="later">Later</button></div></div>';
+}
+$('#per-backup').addEventListener('click',function(ev){
+  var b=ev.target.closest('button');if(!b)return;
+  if(b.getAttribute('data-bk')==='save'){doExport();renderBackup()}
+  else{S.bkSnooze=add(today(),3);save();renderBackup();toast('I will ask again in a few days')}
+});
+function renderRemind(){
+  var el=$('#per-remind'),A=analyse(),pr=predictions(A),t=today();
+  el.innerHTML='';pendingChime=null;
+  if(!S.set.remind||!pr||S.remDismiss===t)return;
+  var last=pr.last;
+  if(last.start>t||(S.days[t]&&S.days[t].flow>0))return;
+  var next=pr.list[0],until=diff(t,next.start),N=S.set.remindDays,title,body,kind,late=false;
+  var win='';
+  if(pr.spread&&pr.spread[1]>pr.spread[0])win=' Your recent moons suggest anywhere from '+esc(fmt(add(last.start,pr.spread[0])))+' to '+esc(fmt(add(last.start,pr.spread[1])))+'.';
+  if(until>=1&&until<=N){
+    kind='near';title='A bloom is near';
+    body='Expected in '+until+' day'+(until>1?'s':'')+', around '+esc(fmt(next.start))+'.'+win+' Keep your comforts close: warm tea, a hot-water bottle, something soft.';
+  }else if(until===0){
+    kind='today';title='Today may be the day';
+    body='Your bloom is expected today.'+win+' When it arrives, press it into your almanac.';
+  }else if(until<0&&until>=-14){
+    var n=-until;late=true;kind='late';
+    title='Your bloom is running late';
+    body='It was expected '+n+' day'+(n>1?'s':'')+' ago. Cycles wander, and a few days either way is common.'+(n>=7?' If it has been over a week and you feel unsure or unwell, a healthcare provider can help.':'')+' Write a letter when it arrives.';
+  }else return;
+  var btn=until<=0?'<button class="per-btn main" data-act="write">Write today\'s letter</button>':'';
+  el.innerHTML='<div class="per-card per-remind'+(late?' late':'')+'">'+BELL+'<div><h2>'+title+'</h2><p>'+body+'</p>'+btn+'</div><button class="per-x" data-act="dismiss" aria-label="Dismiss until tomorrow">✕</button></div>';
+  maybeChime(kind);
+}
+$('#per-remind').addEventListener('click',function(ev){
+  var b=ev.target.closest('button');if(!b)return;
+  var a=b.getAttribute('data-act');
+  if(a==='dismiss'){pendingChime=null;S.remDismiss=today();save();renderRemind();toast('Until tomorrow, my dear')}
+  else if(a==='write')openSheet(today());
+});
+
+/* ---------- calendar ---------- */
+var now=new Date(),view={y:now.getFullYear(),m:now.getMonth()};
+var MOONN=['New moon','First quarter','Full moon','Last quarter'];
+function moonKey(y,m,d){
+  var jd=new Date(y,m,d,12).getTime()/864e5+2440587.5,f=((jd-2451550.1)/29.530588853)%1;if(f<0)f+=1;
+  var half=0.5/29.530588853;
+  for(var k=0;k<4;k++){var dd=Math.abs(f-k/4);if(k===0)dd=Math.min(f,1-f);if(dd<=half)return k}
+  return -1;
+}
+function moonSVG(k){
+  var o='<circle cx="6" cy="6" r="4.6" fill="none" stroke="currentColor" stroke-width="1"/>';
+  if(k===1)o+='<path d="M6 1.4a4.6 4.6 0 0 1 0 9.2z" fill="currentColor"/>';
+  else if(k===2)o='<circle cx="6" cy="6" r="4.8" fill="currentColor"/>';
+  else if(k===3)o+='<path d="M6 1.4a4.6 4.6 0 0 0 0 9.2z" fill="currentColor"/>';
+  return '<svg class="per-mn" viewBox="0 0 12 12" width="9" height="9" aria-hidden="true">'+o+'</svg>';
+}
+function renderCal(){
+  var y=view.y,m=view.m;
+  $('#per-month').textContent=new Date(y,m,1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  var names=['S','M','T','W','T','F','S'],ws=S.set.weekStart,dh='';
+  for(var i=0;i<7;i++)dh+='<span>'+names[(i+ws)%7]+'</span>';
+  $('#per-dow').innerHTML=dh;
+  var lead=(new Date(y,m,1,12).getDay()-ws+7)%7,dim=new Date(y,m+1,0).getDate();
+  var A=analyse(),pr=predictions(A),mk=markers(pr),t=today(),h='';
+  for(i=0;i<lead;i++)h+='<span></span>';
+  var al={1:.5,2:.7,3:.85,4:1};
+  for(var d=1;d<=dim;d++){
+    var ds=y+'-'+pad(m+1)+'-'+pad(d),e=S.days[ds],c='per-day',st='';
+    if(e&&e.flow>0){c+=' per-flow';st='--a:'+al[e.flow]}
+    else if(mk[ds])c+=' per-'+mk[ds];
+    if(ds===t)c+=' per-today';
+    if(e&&((e.sym&&e.sym.length)||e.mood||e.note||typeof e.cramps==='number'||e.energy||hasRit(e)))c+=' per-note';
+    var mk4=moonKey(y,m,d);
+    h+='<button class="'+c+'" data-d="'+ds+'" style="'+st+'" aria-label="'+esc(fmtLong(ds))+(mk4>-1?', '+MOONN[mk4]:'')+'">'+d+(mk4>-1?moonSVG(mk4):'')+'</button>';
+  }
+  $('#per-grid').innerHTML=h;
+}
+$('#per-grid').addEventListener('click',function(ev){var b=ev.target.closest('.per-day');if(b)openSheet(b.getAttribute('data-d'))});
+function shiftMonth(n){view.m+=n;if(view.m<0){view.m=11;view.y--}if(view.m>11){view.m=0;view.y++}renderCal()}
+$('#per-prev').onclick=function(){shiftMonth(-1)};
+$('#per-next').onclick=function(){shiftMonth(1)};
+(function(){var x0=null,g=$('#per-grid');
+  g.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+  g.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>60)shiftMonth(dx<0?1:-1)},{passive:true});
+})();
+
+/* ---------- daily letter (sheet) ---------- */
+var FLOWS=[[0,'None'],[2,'Light'],[3,'Medium'],[4,'Heavy']];
+function allSyms(){return SYMS.concat(S.mySyms||[])}
+var SYMS=['Cramps','Headache','Bloating','Backache','Tender breasts','Fatigue','Nausea','Acne','Cravings','Low energy','Poor sleep','Dizziness'];
+var MOODS=['Radiant','Calm','Tender','Anxious','Irritable','Low','Weepy'];
+var MOODD={
+  Radiant:'Glowing and full of light. Energy to spare, and a heart that wants to be seen and adored.',
+  Calm:'Still as moonlit water. Settled, unhurried, and quietly at peace with the world.',
+  Tender:'Soft and easily moved. A heart that longs for gentleness, warm words and small kindnesses.',
+  Anxious:'A flutter of restless butterflies. Racing thoughts, a tight chest, and a mind that will not settle.',
+  Irritable:'Thorns showing among the roses. Patience wears thin and little things sting more than usual.',
+  Low:'A grey and quiet day. Heavy, tired and withdrawn, wanting comfort, rest and tea.',
+  Weepy:'Tears waiting close to the surface. Feelings overflow without warning, and that is perfectly allowed.'
+};
+var edit=null;
+var EXS=['Rest','Walk','Yoga','Stretch','Workout','Run','Swim','Dance'];
+var DISS=['Dry','Sticky','Creamy','Watery','Egg-white','Spotting'];
+var INTIM=['Intimate','Intimate, protected','Intimate, unprotected'];
+function hasRit(e){return typeof e.sleep==='number'||e.water>0||!!(e.ex&&e.ex.length)||!!e.dis||!!(e.meds&&e.meds.length)||!!(e.skinAM&&e.skinAM.length)||!!(e.skinPM&&e.skinPM.length)||!!(e.skin&&e.skin.length)}
+function isEmptyRec(e){return !e.flow&&!(e.sym&&e.sym.length)&&!e.mood&&!e.note&&typeof e.cramps!=='number'&&!e.energy&&!hasRit(e)&&!e.intim}
+var WELLKEYS=['sleep','water','ex','meds','skinAM','skinPM','skin'];
+function intimOn(){return !!(S.set.intimacy&&S.pin)}
+function openSheet(ds){
+  var e=S.days[ds]||{};
+  edit={ds:ds,flow:e.flow||0,sym:(e.sym||[]).slice(),mood:e.mood||'',note:e.note||'',cramps:typeof e.cramps==='number'?e.cramps:null,energy:e.energy||0,dis:e.dis||'',intim:e.intim||'',fav:!!e.fav};
+  buildSheet();
+  $('#per-sheet').scrollTop=0;
+  document.body.classList.add('per-sheet-open');
+}
+function chipsHTML(list,attr,sel){
+  return '<div class="per-chips">'+list.map(function(n){return '<button class="per-chip'+(sel(n)?' on':'')+'" data-'+attr+'="'+esc(n)+'">'+esc(n)+'</button>'}).join('')+'</div>';
+}
+function buildSheet(){
+  var ds=edit.ds,future=ds>today();
+  var h='<h2>My dearest diary</h2><div class="per-sub">'+esc(fmtLong(ds))+'</div><div class="per-flourish" aria-hidden="true">✿</div><button class="per-keep" data-keep="1">'+(edit.fav?'★ Kept':'☆ Keep this letter')+'</button>';
+  h+='<h3>The tide of the moon</h3><div class="per-chips">';
+  FLOWS.forEach(function(f){h+='<button class="per-chip'+(edit.flow===f[0]?' on':'')+(future&&f[0]?' dis':'')+'" data-flow="'+f[0]+'">'+f[1]+'</button>'});
+  h+='</div>';
+  if(future)h+='<div class="per-note-t" style="margin-top:6px">Blooms can be marked once the day arrives.</div>';
+  h+='<h3>How strongly the cramps visit</h3>'+scaleHTML('cramps','none','fierce',0);
+  h+='<h3>How full my energy feels</h3>'+scaleHTML('energy','drained','radiant');
+  h+='<h3>What my body whispers</h3><div class="per-chips" id="per-symchips">';
+  allSyms().concat(edit.sym.filter(function(x){return allSyms().indexOf(x)<0})).forEach(function(s){h+='<button class="per-chip'+(edit.sym.indexOf(s)>-1?' on':'')+'" data-sym="'+esc(s)+'">'+esc(s)+'</button>'});
+  h+='</div><div class="per-addmed"><input id="per-newsym" maxlength="24" placeholder="Add your own whisper…" autocomplete="off"><button data-addsym="1">Add</button></div><h3>Discharge &amp; spotting</h3>'+chipsHTML(DISS,'dis',function(n){return edit.dis===n});
+  h+='<div class="per-note-t" style="margin-top:4px">Light spotting between blooms goes here, so it is not counted as a period.</div>';
+  h+='<h3>How my heart feels</h3><div class="per-chips">';
+  MOODS.forEach(function(s){h+='<button class="per-chip'+(edit.mood===s?' on':'')+'" data-mood="'+s+'">'+s+'</button>'});
+  h+='</div><div class="per-mooddesc'+(edit.mood?' on':'')+'" id="per-mooddesc">'+(edit.mood?esc(MOODD[edit.mood]):'')+'</div>';
+  if(intimOn())h+='<h3>Private page ❦</h3>'+chipsHTML(INTIM,'intim',function(n){return edit.intim===n});
+  h+='<h3>Words for my heart</h3><textarea id="per-note" placeholder="Dear diary, today my heart feels…">'+esc(edit.note)+'</textarea>';
+  h+='<div class="per-note-t" style="margin-top:6px">Sleep, water, movement, skin care and medicines live in the Wellness page.</div>';
+  h+='<div class="per-sheetbtns"><button id="per-clear">Let it fade</button><button class="main" id="per-save">Seal with a kiss ♡</button></div>';
+  $('#per-sheet').innerHTML=h;
+}
+function scaleHTML(k,lo,hi,from){
+  var b='';for(var n=(from===undefined?1:from);n<=5;n++)b+='<button class="per-sc'+(edit[k]===n?' on':'')+'" data-scale="'+k+'" data-v="'+n+'" aria-label="'+k+' '+n+' of 5">'+n+'</button>';
+  return '<div class="per-scale">'+b+'</div><div class="per-scalelab"><span>'+lo+'</span><span>'+hi+'</span></div>';
+}
+function closeSheet(){document.body.classList.remove('per-sheet-open');edit=null}
+$('#per-sheet-bg').onclick=closeSheet;
+$('#per-sheet').addEventListener('click',function(ev){
+  if(!edit)return;
+  var b=ev.target.closest('button');if(!b)return;
+  if(b.hasAttribute('data-flow')){
+    edit.flow=+b.getAttribute('data-flow');
+    [].forEach.call($('#per-sheet').querySelectorAll('[data-flow]'),function(x){x.classList.toggle('on',+x.getAttribute('data-flow')===edit.flow)});
+  }else if(b.hasAttribute('data-sym')){
+    var s=b.getAttribute('data-sym'),i=edit.sym.indexOf(s);
+    if(i>-1)edit.sym.splice(i,1);else edit.sym.push(s);
+    b.classList.toggle('on',i===-1);
+  }else if(b.hasAttribute('data-addsym')){
+    var inp=$('#per-newsym'),nm=inp.value.trim().replace(/\s+/g,' ');
+    if(!nm)return;
+    var ex=allSyms().filter(function(x){return x.toLowerCase()===nm.toLowerCase()})[0];
+    if(!ex){
+      if(S.mySyms.length>=24){toast('That is plenty already');return}
+      S.mySyms.push(nm);ex=nm;save();
+      var c=document.createElement('button');c.className='per-chip';c.setAttribute('data-sym',nm);c.textContent=nm;$('#per-symchips').appendChild(c);
+    }
+    var cb=[].filter.call($('#per-symchips').children,function(x){return x.getAttribute('data-sym')===ex})[0];
+    if(edit.sym.indexOf(ex)<0){edit.sym.push(ex);if(cb)cb.classList.add('on')}
+    inp.value='';toast(ex===nm?'Added to your whispers ✿':'Marked');
+  }else if(b.hasAttribute('data-scale')){
+    var k=b.getAttribute('data-scale'),v=+b.getAttribute('data-v');
+    edit[k]=edit[k]===v?(k==='cramps'?null:0):v;
+    [].forEach.call($('#per-sheet').querySelectorAll('[data-scale="'+k+'"]'),function(x){x.classList.toggle('on',+x.getAttribute('data-v')===edit[k])});
+  }else if(b.hasAttribute('data-mood')){
+    var m=b.getAttribute('data-mood');edit.mood=edit.mood===m?'':m;
+    [].forEach.call($('#per-sheet').querySelectorAll('[data-mood]'),function(x){x.classList.toggle('on',x.getAttribute('data-mood')===edit.mood)});
+    var md=$('#per-mooddesc');md.classList.toggle('on',!!edit.mood);md.textContent=edit.mood?MOODD[edit.mood]:'';
+  }else if(b.hasAttribute('data-keep')){
+    edit.fav=!edit.fav;b.textContent=edit.fav?'★ Kept':'☆ Keep this letter';
+  }else if(b.hasAttribute('data-dis')||b.hasAttribute('data-intim')){
+    var ik=b.hasAttribute('data-dis')?'dis':'intim',iv=b.getAttribute('data-'+ik);
+    edit[ik]=edit[ik]===iv?'':iv;
+    [].forEach.call($('#per-sheet').querySelectorAll('[data-'+ik+']'),function(x){x.classList.toggle('on',x.getAttribute('data-'+ik)===edit[ik])});
+  }else if(b.id==='per-save'){
+    var note=$('#per-note').value.trim(),old=S.days[edit.ds]||{};
+    var rec={flow:edit.flow,sym:edit.sym,mood:edit.mood,note:note,cramps:edit.cramps,energy:edit.energy};
+    WELLKEYS.forEach(function(k){if(old[k]!==undefined)rec[k]=old[k]});
+    if(edit.dis)rec.dis=edit.dis;
+    if(edit.intim)rec.intim=edit.intim;
+    if(edit.fav)rec.fav=true;
+    if(isEmptyRec(rec))delete S.days[edit.ds];else S.days[edit.ds]=rec;
+    save();closeSheet();refresh();toast('Sealed with love ♡');
+  }else if(b.id==='per-clear'){
+    var old2=S.days[edit.ds]||{},keep={};
+    WELLKEYS.forEach(function(k){if(old2[k]!==undefined)keep[k]=old2[k]});
+    if(isEmptyRec(keep))delete S.days[edit.ds];else S.days[edit.ds]=keep;
+    save();closeSheet();refresh();toast('The page fades gently away');
+  }
+});
+$('#per-fab').onclick=function(){openSheet(today())};
+
+
+/* ---------- what to expect (by phase) ---------- */
+var TIPS={
+  'Bloom':'Warmth, rest and iron-rich foods can feel kind right now. Slow stretching or a gentle walk often helps.',
+  'Awakening':'Energy often begins to rise. A lovely time for fresh starts, new routines and a little adventure.',
+  'Fertile glow':'Many people feel brighter and more social around now. Keep water close and enjoy the glow.',
+  'Ovulation day':'Often the brightest point of the moon, and many people feel their most energetic.',
+  'Quiet moon':'Winding down is natural. Steady sleep, water and calm evenings can ease the days before your bloom.'
+};
+function phaseOnCd(cdm,pr){
+  var ovd=pr.cl-pr.lu+1;
+  if(cdm<=pr.pl)return 'Bloom';
+  if(cdm===ovd)return 'Ovulation day';
+  if(cdm>=ovd-5&&cdm<=ovd+1)return 'Fertile glow';
+  if(cdm<ovd-5)return 'Awakening';
+  return 'Quiet moon';
+}
+function prevRows(A){
+  var cur=A.P.length?A.P[A.P.length-1].start:null,rows=[];
+  Object.keys(S.days).forEach(function(d){
+    var st=null;for(var i=0;i<A.P.length;i++){if(A.P[i].start<=d)st=A.P[i].start;else break}
+    if(!st||st===cur)return;
+    var cd=diff(st,d)+1;if(cd>60)return;
+    rows.push({cd:cd,start:st,e:S.days[d]});
+  });
+  return rows;
+}
+function topKey(o,min){
+  var k=Object.keys(o).sort(function(a,b){return o[b]-o[a]});
+  return k.length&&o[k[0]]>=min?k[0]:null;
+}
+function expectStats(rows,cdm){
+  var r=rows.filter(function(x){return Math.abs(x.cd-cdm)<=1});
+  if(r.length<2)return null;
+  var cr=[],en=[],mo={},sy={},sk={},cyc={};
+  r.forEach(function(x){
+    var e=x.e;cyc[x.start]=1;
+    if(typeof e.cramps==='number')cr.push(e.cramps);
+    if(e.energy)en.push(e.energy);
+    if(e.mood)mo[e.mood]=(mo[e.mood]||0)+1;
+    (e.sym||[]).forEach(function(q){sy[q]=(sy[q]||0)+1});
+    (e.skin||[]).forEach(function(q){sk[q]=(sk[q]||0)+1});
+  });
+  function mean(a){return a.length>=2?a.reduce(function(x,y){return x+y},0)/a.length:null}
+  var syms=Object.keys(sy).filter(function(q){return sy[q]/r.length>=.4}).sort(function(a,b){return sy[b]-sy[a]}).slice(0,2);
+  return {n:r.length,cycles:Object.keys(cyc).length,cramps:mean(cr),energy:mean(en),mood:topKey(mo,2),syms:syms,skin:topKey(sk,2)};
+}
+function describeStats(x){
+  if(!x)return [];
+  var p=[];
+  if(x.energy!==null)p.push('energy about '+x.energy.toFixed(1)+' of 5');
+  if(x.cramps!==null)p.push(x.cramps<.5?'cramps rarely visit':'cramps about '+x.cramps.toFixed(1)+' of 5');
+  if(x.mood)p.push('mood often '+x.mood.toLowerCase());
+  if(x.syms.length)p.push('you often note '+x.syms.join(' and ').toLowerCase());
+  if(x.skin)p.push('skin often '+x.skin.toLowerCase());
+  return p;
+}
+function expectToday(A,pr){
+  if(!pr||pr.last.start>today())return '';
+  var cd=diff(pr.last.start,today())+1,parts=describeStats(expectStats(prevRows(A),cd));
+  return parts.length?'❦ Around day '+cd+' of your earlier moons: '+esc(parts.join(', '))+'.':'';
+}
+function expectCard(A){
+  var pr=predictions(A),t=today();
+  if(!pr||pr.last.start>t)return '';
+  var rows=prevRows(A),cdT=diff(pr.last.start,t)+1,late=cdT>pr.cl;
+  var cycAll={};rows.forEach(function(x){cycAll[x.start]=1});
+  var ph=phaseOnCd(cdT,pr);
+  var h='<div class="per-card"><h2>What to expect</h2><div class="per-note-t">Today is day '+cdT+' of your moon · '+ph+'</div><p style="margin:8px 0 0">'+TIPS[ph]+'</p><div class="per-wnote">General guidance, not medical advice.</div>';
+  h+='<h3>The week ahead</h3><ul class="per-hist">';
+  var wd=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  for(var i=0;i<7;i++){
+    var ds=add(t,i),raw=cdT+i,cdm=(!late&&raw>pr.cl)?raw-pr.cl:raw;
+    var phs=phaseOnCd(cdm,pr),parts=describeStats(expectStats(rows,cdm));
+    var lab=i===0?'Today':(i===1?'Tomorrow':wd[parse(ds).getDay()]+' '+fmt(ds));
+    h+='<li><span>'+esc(lab)+'<br><small>Day '+cdm+' · '+phs+'</small></span><small style="text-align:right;max-width:58%">'+(parts.length?esc(parts.join(', ')):'not enough history yet')+'</small></li>';
+  }
+  h+='</ul>';
+  var nc=Object.keys(cycAll).length;
+  h+='<div class="per-wnote">'+(nc?'Drawn from your own letters across '+nc+' earlier moon'+(nc>1?'s':'')+'. These are patterns, not promises.':'Log your cramps, energy and mood across a full moon, and your own patterns will appear here.')+'</div></div>';
+  return h;
+}
+
+/* ---------- wellness page ---------- */
+var wday=today();
+var SKINF=['Glowing','Clear','Dry','Oily','Sensitive','Breakout','Irritated'];
+function wset(ds,key,val){
+  var r=S.days[ds]||{};
+  var empty=val===null||val===''||val===0||(Array.isArray(val)&&!val.length);
+  if(empty)delete r[key];else r[key]=val;
+  if(isEmptyRec(r))delete S.days[ds];else S.days[ds]=r;
+  save();
+}
+function wtoggle(ds,key,name){
+  var r=S.days[ds]||{},a=(r[key]||[]).slice(),i=a.indexOf(name);
+  if(i>-1)a.splice(i,1);else a.push(name);
+  wset(ds,key,a);
+}
+function moved(e){return (e.ex||[]).some(function(x){return x!=='Rest'})}
+function streak(fn){
+  var d=today();
+  if(!fn(S.days[d]||{}))d=add(d,-1);
+  var n=0;
+  while(n<400&&fn(S.days[d]||{})){n++;d=add(d,-1)}
+  return n;
+}
+function wbars(o){
+  var k=Object.keys(o).sort(function(a,b){return o[b]-o[a]}).slice(0,6);
+  if(!k.length)return '<p class="per-note-t">Nothing noted yet.</p>';
+  var m=o[k[0]];
+  return k.map(function(x){return '<div class="per-bar"><em>'+esc(x)+'</em><div><i style="width:'+Math.round(o[x]/m*100)+'%"></i></div><span>'+o[x]+'</span></div>'}).join('');
+}
+function wstepHTML(k,txt){
+  return '<div class="per-step"><button data-wstep="'+k+'" data-d="-1" aria-label="less">−</button><span>'+txt+'</span><button data-wstep="'+k+'" data-d="1" aria-label="more">+</button><button class="per-stepx" data-wclear="'+k+'">clear</button></div>';
+}
+var wedit=false;
+function editorHTML(){
+  function list(arr,attr){return arr.length?arr.map(function(m,i){return '<span class="per-medrow">'+esc(m)+'<button data-'+attr+'="'+i+'" aria-label="Remove '+esc(m)+'">✕</button></span>'}).join(''):'<span class="per-note-t">None yet.</span>'}
+  var h='<div class="per-card"><h2>My lists &amp; goals</h2><div class="per-note-t">Your routine, your products. What you keep here appears as tap-to-select choices on your daily page. Past entries are never erased.</div>';
+  h+='<h3>Goals</h3><div class="per-row"><label>Sleep goal<small>hours a night</small></label><input type="number" inputmode="decimal" min="5" max="12" step="0.5" id="per-s-sleepgoal" value="'+S.set.sleepGoal+'"></div>';
+  h+='<div class="per-row"><label>Water goal<small>glasses a day</small></label><input type="number" inputmode="numeric" min="1" max="20" id="per-s-watergoal" value="'+S.set.waterGoal+'"></div>';
+  h+='<h3>Skin-care steps</h3><div>'+list(S.skinSteps,'delskin')+'</div><div class="per-addmed"><input id="per-wnew-skin" maxlength="24" placeholder="Add a step or product…" autocomplete="off"><button data-wadd="skin">Add</button></div>';
+  h+='<h3>My own symptoms</h3><div>'+list(S.mySyms,'delsym')+'</div><div class="per-addmed"><input id="per-wnew-sym" maxlength="24" placeholder="Add a symptom of your own…" autocomplete="off"><button data-wadd="sym">Add</button></div><div class="per-wnote">These join the symptom chips in your daily letter. Past letters keep what you recorded.</div>';
+  h+='<h3>Medicines &amp; supplements</h3><div>'+list(S.meds,'delmed')+'</div><div class="per-addmed"><input id="per-wnew-med" maxlength="24" placeholder="Add your own…" autocomplete="off"><button data-wadd="med">Add</button></div>';
+  h+='<div style="margin-top:16px"><button class="per-btn main" data-wedit="0">Done</button></div></div>';
+  return h;
+}
+function renderWellness(){
+  var el=$('#per-v-well'),ds=wday,t=today(),e=S.days[ds]||{},sg=S.set.sleepGoal,wg=S.set.waterGoal;
+  if(wedit){el.innerHTML=editorHTML();return}
+  var h='<div class="per-card"><div class="per-calhead"><button data-wnav="-1" aria-label="Previous day">‹</button><h2 style="font-size:24px">'+(ds===t?'Today':esc(fmt(ds,{weekday:'long',month:'short',day:'numeric'})))+'</h2><button data-wnav="1" aria-label="Next day"'+(ds>=t?' disabled style="opacity:.3"':'')+'>›</button></div>';
+  if(ds!==t)h+='<div style="text-align:center"><button class="per-btn" data-wnav="today">Back to today</button></div>';
+  h+='<div class="per-note-t" style="text-align:center">Everything here saves as you tap.</div>';
+  var sl=typeof e.sleep==='number'?e.sleep:null,wa=e.water||0;
+  h+='<h3>Sleep last night</h3>'+wstepHTML('sleep',sl===null?'—':sl+' h');
+  h+='<div class="per-prog"><i style="width:'+(sl===null?0:Math.min(100,sl/sg*100))+'%"></i></div><div class="per-wnote">goal '+sg+' hours</div>';
+  h+='<h3>Water, glass by glass</h3>'+wstepHTML('water',wa>0?wa+(wa===1?' glass':' glasses'):'—');
+  h+='<div class="per-prog"><i style="width:'+Math.min(100,wa/wg*100)+'%"></i></div><div class="per-wnote">goal '+wg+' glasses</div>';
+  h+='<h3>Movement</h3>'+chipsHTML(EXS,'wex',function(n){return (e.ex||[]).indexOf(n)>-1});
+  h+='<h3>Skin care · morning</h3>'+chipsHTML(S.skinSteps.concat((e.skinAM||[]).filter(function(m){return S.skinSteps.indexOf(m)<0})),'wskinam',function(n){return (e.skinAM||[]).indexOf(n)>-1});
+  h+='<button class="per-btn" data-wcopy="skinAM" style="margin-top:6px">Repeat yesterday</button>';
+  h+='<h3>Skin care · evening</h3>'+chipsHTML(S.skinSteps.concat((e.skinPM||[]).filter(function(m){return S.skinSteps.indexOf(m)<0})),'wskinpm',function(n){return (e.skinPM||[]).indexOf(n)>-1});
+  h+='<button class="per-btn" data-wcopy="skinPM" style="margin-top:6px">Repeat yesterday</button>';
+  h+='<h3>How my skin feels</h3>'+chipsHTML(SKINF,'wfeel',function(n){return (e.skin||[]).indexOf(n)>-1});
+  h+='<h3>Medicines &amp; supplements</h3>'+chipsHTML(S.meds.concat((e.meds||[]).filter(function(m){return S.meds.indexOf(m)<0})),'wmed',function(n){return (e.meds||[]).indexOf(n)>-1});
+  h+='<div style="margin-top:14px"><button class="per-btn" data-wedit="1">✎ Edit my lists &amp; goals</button></div></div>';
+
+  /* week */
+  var days=[];for(var i=6;i>=0;i--)days.push(add(t,-i));
+  var wk='<div class="per-wk"><span></span>'+days.map(function(d){return '<div class="dh'+(d===ds?' sel':'')+'" data-wd="'+d+'">'+esc(fmt(d,{weekday:'narrow'}))+'<br>'+parse(d).getDate()+'</div>'}).join('');
+  wk+='<span class="lab">Sleep<small>hours</small></span>'+days.map(function(d){var x=S.days[d]||{},v=typeof x.sleep==='number'?x.sleep:null;return '<div class="cell" data-wd="'+d+'"><div class="bar"><i style="height:'+(v===null?0:Math.min(100,v/12*100))+'%"></i></div><small>'+(v===null?'·':v)+'</small></div>'}).join('');
+  wk+='<span class="lab">Water<small>glasses</small></span>'+days.map(function(d){var x=S.days[d]||{},v=x.water||0;return '<div class="cell" data-wd="'+d+'"><div class="bar w"><i style="height:'+(v?Math.min(100,v/wg*100):0)+'%"></i></div><small>'+(v||'·')+'</small></div>'}).join('');
+  wk+='<span class="lab">Moved<small>○ rest</small></span>'+days.map(function(d){var x=S.days[d]||{};return '<div class="dot" data-wd="'+d+'">'+(moved(x)?'●':((x.ex||[]).length?'○':'·'))+'</div>'}).join('');
+  wk+='<span class="lab">Skin<small>am · pm</small></span>'+days.map(function(d){var x=S.days[d]||{};return '<div class="dot" data-wd="'+d+'">'+((x.skinAM||[]).length?'●':'○')+((x.skinPM||[]).length?'●':'○')+'</div>'}).join('')+'</div>';
+  h+='<div class="per-card"><h2>This week</h2>'+wk+'<div class="per-wnote">Tap a day to open it above.</div></div>';
+
+  /* streaks & summary */
+  var sk=streak(function(x){return (x.skinAM&&x.skinAM.length)||(x.skinPM&&x.skinPM.length)}),
+      hy=streak(function(x){return (x.water||0)>=wg}),
+      rs=streak(function(x){return typeof x.sleep==='number'&&x.sleep>=sg});
+  var d30=[];for(var j=0;j<30;j++)d30.push(add(t,-j));
+  var s30=[],w30=[],mv=0,exC={},stC={},feC={},mdC={},hi=[],lo=[];
+  d30.forEach(function(d){
+    var x=S.days[d];if(!x)return;
+    if(typeof x.sleep==='number'){s30.push(x.sleep);if(x.energy>0)(x.sleep>=7?hi:lo).push(x.energy)}
+    if(x.water>0)w30.push(x.water);
+    if(moved(x))mv++;
+    (x.ex||[]).forEach(function(q){exC[q]=(exC[q]||0)+1});
+    (x.skinAM||[]).concat(x.skinPM||[]).forEach(function(q){stC[q]=(stC[q]||0)+1});
+    (x.skin||[]).forEach(function(q){feC[q]=(feC[q]||0)+1});
+    (x.meds||[]).forEach(function(q){mdC[q]=(mdC[q]||0)+1});
+  });
+  function mean(a){return a.reduce(function(p,q){return p+q},0)/a.length}
+  h+='<div class="per-card"><h2>Gentle streaks</h2><div class="per-stats">'+
+    '<div class="per-stat"><b>'+sk+'</b><span>days of skin care in a row</span></div>'+
+    '<div class="per-stat"><b>'+hy+'</b><span>days at your water goal</span></div>'+
+    '<div class="per-stat"><b>'+rs+'</b><span>nights at your sleep goal</span></div>'+
+    '<div class="per-stat"><b>'+mv+'</b><span>days you moved this month</span></div></div>';
+  h+='<div class="per-wnote">A streak keeps going if today is not done yet. It pauses, never punishes.</div>';
+  var anyData=s30.length||w30.length||mv||Object.keys(stC).length||Object.keys(mdC).length||Object.keys(feC).length;
+  if(!anyData)h+='<p class="per-note-t">Note a little sleep, water, movement or skin care above, and your gentle habits will gather here.</p>';
+  else{
+    var sum=[];
+    if(s30.length)sum.push('sleep averaged '+mean(s30).toFixed(1)+' hours');
+    if(w30.length)sum.push('water averaged '+mean(w30).toFixed(1)+' glasses');
+    if(sum.length)h+='<p class="per-note-t">Over the last 30 days, your '+sum.join(' and ')+'.</p>';
+    if(hi.length>=3&&lo.length>=3)h+='<p class="per-note-t">On days after 7 or more hours of sleep, your energy averaged '+mean(hi).toFixed(1)+' of 5, against '+mean(lo).toFixed(1)+' after shorter nights.</p>';
+    if(Object.keys(exC).length)h+='<h3>Movement · 30 days</h3>'+wbars(exC);
+    if(Object.keys(stC).length)h+='<h3>Skin-care steps · 30 days</h3>'+wbars(stC);
+    if(Object.keys(feC).length)h+='<h3>How your skin felt · 30 days</h3>'+wbars(feC);
+    if(Object.keys(mdC).length)h+='<h3>Medicines &amp; supplements · 30 days</h3>'+wbars(mdC);
+  }
+  h+='</div>';
+  el.innerHTML=h;
+}
+$('#per-v-well').addEventListener('change',function(ev){
+  var t=ev.target;
+  if(t.id==='per-s-sleepgoal'){var sv=parseFloat(t.value);sv=isNaN(sv)?8:Math.max(5,Math.min(12,Math.round(sv*2)/2));S.set.sleepGoal=sv;t.value=sv;save()}
+  else if(t.id==='per-s-watergoal'){S.set.waterGoal=clamp(t.value,1,20,8);t.value=S.set.waterGoal;save()}
+});
+$('#per-v-well').addEventListener('click',function(ev){
+  var y=window.scrollY,t=today();
+  var wd=ev.target.closest('[data-wd]');
+  if(wd){wday=wd.getAttribute('data-wd');renderWellness();window.scrollTo(0,0);return}
+  var b=ev.target.closest('button');if(!b)return;
+  var ds=wday,e=S.days[ds]||{},v;
+  if(b.hasAttribute('data-wedit')){wedit=b.getAttribute('data-wedit')==='1';renderWellness();window.scrollTo(0,0);return}
+  if(b.hasAttribute('data-delsym')){S.mySyms.splice(+b.getAttribute('data-delsym'),1);save();renderWellness();window.scrollTo(0,y);return}
+  if(b.hasAttribute('data-delskin')){S.skinSteps.splice(+b.getAttribute('data-delskin'),1);save();renderWellness();window.scrollTo(0,y);return}
+  if(b.hasAttribute('data-delmed')){S.meds.splice(+b.getAttribute('data-delmed'),1);save();renderWellness();window.scrollTo(0,y);return}
+  if(b.hasAttribute('data-wnav')){
+    v=b.getAttribute('data-wnav');
+    if(v==='today')wday=t;else{var nd=add(wday,+v);if(nd<=t)wday=nd}
+    renderWellness();window.scrollTo(0,0);return;
+  }
+  if(b.hasAttribute('data-wstep')){
+    var k=b.getAttribute('data-wstep'),d=+b.getAttribute('data-d');
+    if(k==='sleep'){var cur=typeof e.sleep==='number'?e.sleep:null;wset(ds,'sleep',cur===null?S.set.sleepGoal:Math.max(0,Math.min(14,cur+d*.5)))}
+    else wset(ds,'water',Math.max(0,Math.min(30,(e.water||0)+d)));
+  }else if(b.hasAttribute('data-wclear')){wset(ds,b.getAttribute('data-wclear'),null)}
+  else if(b.hasAttribute('data-wex'))wtoggle(ds,'ex',b.getAttribute('data-wex'));
+  else if(b.hasAttribute('data-wskinam'))wtoggle(ds,'skinAM',b.getAttribute('data-wskinam'));
+  else if(b.hasAttribute('data-wskinpm'))wtoggle(ds,'skinPM',b.getAttribute('data-wskinpm'));
+  else if(b.hasAttribute('data-wfeel'))wtoggle(ds,'skin',b.getAttribute('data-wfeel'));
+  else if(b.hasAttribute('data-wmed'))wtoggle(ds,'meds',b.getAttribute('data-wmed'));
+  else if(b.hasAttribute('data-wcopy')){
+    var key=b.getAttribute('data-wcopy'),prev=(S.days[add(ds,-1)]||{})[key]||[];
+    if(!prev.length){toast('Nothing logged yesterday to repeat');return}
+    wset(ds,key,prev.slice());toast('Repeated, my dear');
+  }else if(b.hasAttribute('data-wadd')){
+    var kind=b.getAttribute('data-wadd'),inp=$(kind==='skin'?'#per-wnew-skin':(kind==='sym'?'#per-wnew-sym':'#per-wnew-med')),nm=inp.value.trim();
+    if(!nm)return;
+    var list=kind==='skin'?S.skinSteps:(kind==='sym'?S.mySyms:S.meds);
+    if(list.indexOf(nm)>-1||(kind==='sym'&&SYMS.indexOf(nm)>-1)){toast('Already in your list');return}
+    if(list.length>=24){toast('That is plenty already');return}
+    list.push(nm);save();toast('Added to your list ✿');
+  }else return;
+  renderWellness();window.scrollTo(0,y);
+});
+
+
+/* ---------- letters (archive) ---------- */
+var lq='',lmood='',lsym='',lmonth='',lfav=false,lsort='new',lshow=30;
+function hasLetter(e){return e.flow>0||!!(e.sym&&e.sym.length)||!!e.mood||!!e.note||typeof e.cramps==='number'||e.energy>0||!!e.dis}
+function allLetterDays(){return Object.keys(S.days).filter(function(d){return hasLetter(S.days[d])})}
+function filteredLetters(){
+  var q=lq.trim().toLowerCase(),out=[];
+  allLetterDays().forEach(function(d){
+    var e=S.days[d];
+    if(lfav&&!e.fav)return;
+    if(lmood&&e.mood!==lmood)return;
+    if(lsym&&(e.sym||[]).indexOf(lsym)<0)return;
+    if(lmonth&&d.slice(0,7)!==lmonth)return;
+    if(q){var hay=[e.note||'',e.mood||'',(e.sym||[]).join(' '),e.dis||''].join(' ').toLowerCase();if(hay.indexOf(q)<0)return}
+    out.push(d);
+  });
+  out.sort();if(lsort==='new')out.reverse();
+  return out;
+}
+function hl(text,q){
+  q=q.trim().toLowerCase();
+  if(!q)return esc(text);
+  var low=text.toLowerCase(),out='',i=0,j;
+  while((j=low.indexOf(q,i))>-1){out+=esc(text.slice(i,j))+'<mark>'+esc(text.slice(j,j+q.length))+'</mark>';i=j+q.length}
+  return out+esc(text.slice(i));
+}
+function monthLabel(m){var p=m.split('-');return new Date(+p[0],+p[1]-1,1,12).toLocaleDateString('en-US',{month:'long',year:'numeric'})}
+function renderLetters(){
+  var el=$('#per-v-letters'),days=allLetterDays();
+  var months={};days.forEach(function(d){months[d.slice(0,7)]=1});
+  var ml=Object.keys(months).sort().reverse();
+  var tg='<div class="per-seg" style="margin-bottom:12px"><button data-lview="letters" class="'+(lview==='letters'?'on':'')+'">Letters</button><button data-lview="poems" class="'+(lview==='poems'?'on':'')+'">Poems</button></div>';
+  if(lview==='poems'){el.innerHTML=tg+'<div id="per-lbody"></div>';renderPoems();return}
+  var h=tg+'<div class="per-card"><h2>Letters</h2>';
+  if(!days.length){
+    el.innerHTML=h+'<p class="per-note-t">Your letters will gather here, like a little box of keepsakes. Write one from the Almanac and it will appear.</p></div>';
+    return;
+  }
+  h+='<input class="per-search" id="per-lq" type="search" placeholder="Search your words…" value="'+esc(lq)+'" autocomplete="off">';
+  h+='<div class="per-fgrid"><select class="per-select" id="per-lmood"><option value="">Any mood</option>'+MOODS.map(function(m){return '<option'+(m===lmood?' selected':'')+'>'+m+'</option>'}).join('')+'</select>'+
+     '<select class="per-select" id="per-lsym"><option value="">Any symptom</option>'+allSyms().map(function(m){return '<option'+(m===lsym?' selected':'')+'>'+m+'</option>'}).join('')+'</select>'+
+     '<select class="per-select full" id="per-lmonth"><option value="">Every month</option>'+ml.map(function(m){return '<option value="'+m+'"'+(m===lmonth?' selected':'')+'>'+esc(monthLabel(m))+'</option>'}).join('')+'</select></div>';
+  h+='<div class="per-frow"><button class="per-chip'+(lfav?' on':'')+'" data-lfav="1">★ Kept only</button>'+
+     '<button class="per-chip'+(lsort==='new'?' on':'')+'" data-lsort="new">Newest</button><button class="per-chip'+(lsort==='old'?' on':'')+'" data-lsort="old">Oldest</button>'+
+     '<button class="per-chip" data-lreset="1">Clear</button></div>';
+  h+='<div class="per-wnote" id="per-lcount"></div></div><div id="per-llist"></div>';
+  el.innerHTML=h;
+  renderLetterList();
+}
+function renderLetterList(){
+  var box=$('#per-llist');if(!box)return;
+  var list=filteredLetters(),total=allLetterDays().length,A=analyse(),h='';
+  $('#per-lcount').textContent=(list.length===total?total+' letter'+(total>1?'s':''):list.length+' of '+total+' letters');
+  if(!list.length){box.innerHTML='<div class="per-card"><p class="per-note-t">No letters match. Try fewer filters or a different word.</p></div>';return}
+  list.slice(0,lshow).forEach(function(d){
+    var e=S.days[d],st=null;
+    for(var i=0;i<A.P.length;i++){if(A.P[i].start<=d)st=A.P[i].start;else break}
+    var cd=st?diff(st,d)+1:0,sub=[];
+    if(cd&&cd<=60)sub.push('Day '+cd+' of your moon');
+    FLOWS.forEach(function(f){if(f[0]&&f[0]===e.flow)sub.push(f[1].toLowerCase()+' flow')});
+    var tags='';
+    if(e.mood)tags+='<span class="per-tag">'+esc(e.mood)+'</span>';
+    (e.sym||[]).forEach(function(q){tags+='<span class="per-tag">'+esc(q)+'</span>'});
+    if(e.dis)tags+='<span class="per-tag">'+esc(e.dis)+'</span>';
+    if(typeof e.cramps==='number')tags+='<span class="per-tag b">'+(e.cramps?'cramps '+e.cramps+' of 5':'no cramps')+'</span>';
+    if(e.energy>0)tags+='<span class="per-tag b">energy '+e.energy+' of 5</span>';
+    h+='<div class="per-card per-lcard" data-ld="'+d+'"><div class="per-lhead"><div><span class="per-ldate">'+esc(fmtLong(d))+'</span><small>'+esc(sub.join(' · '))+'</small></div><button class="per-starbtn" data-lstar="'+d+'" aria-label="'+(e.fav?'Release this letter':'Keep this letter')+'">'+(e.fav?'★':'☆')+'</button></div>'+
+       (tags?'<div class="per-tags">'+tags+'</div>':'')+(e.note?'<p class="per-lnote">'+hl(e.note,lq)+'</p>':'')+'</div>';
+  });
+  if(list.length>lshow)h+='<div style="text-align:center"><button class="per-btn" data-lmore="1">Show more letters</button></div>';
+  box.innerHTML=h;
+}
+$('#per-v-letters').addEventListener('input',function(ev){
+  if(ev.target.id==='per-lq'){lq=ev.target.value;lshow=30;renderLetterList()}
+});
+$('#per-v-letters').addEventListener('change',function(ev){
+  var t=ev.target;
+  if(t.id==='per-lmood')lmood=t.value;else if(t.id==='per-lsym')lsym=t.value;else if(t.id==='per-lmonth')lmonth=t.value;else return;
+  lshow=30;renderLetterList();
+});
+$('#per-v-letters').addEventListener('click',function(ev){
+  var st=ev.target.closest('[data-lstar]');
+  if(st){
+    var d=st.getAttribute('data-lstar'),e=S.days[d];
+    if(e){if(e.fav){delete e.fav;toast('Released')}else{e.fav=true;toast('Kept close ♡')}save();renderLetterList()}
+    return;
+  }
+  var b=ev.target.closest('button');
+  if(b&&handlePoemUI(b))return;
+  if(b){
+    if(b.hasAttribute('data-lfav'))lfav=!lfav;
+    else if(b.hasAttribute('data-lsort'))lsort=b.getAttribute('data-lsort');
+    else if(b.hasAttribute('data-lmore')){lshow+=30;renderLetterList();return}
+    else if(b.hasAttribute('data-lreset')){lq='';lmood='';lsym='';lmonth='';lfav=false}
+    else return;
+    lshow=30;renderLetters();return;
+  }
+  var c=ev.target.closest('.per-lcard');
+  if(c)openSheet(c.getAttribute('data-ld'));
+});
+
+/* ---------- stars (insights) ---------- */
+function rhythmCard(A){
+  var starts=A.P.map(function(p){return p.start}),bc={},be={},used={},n=0,maxDay=0,tot=0,withC=0,cdays={};
+  Object.keys(S.days).forEach(function(d){
+    var e=S.days[d],hc=typeof e.cramps==='number';if(!hc&&!e.energy)return;
+    var st=null;for(var i=0;i<starts.length;i++){if(starts[i]<=d)st=starts[i];else break}
+    if(!st)return;
+    var cd=diff(st,d)+1;if(cd>45)return;
+    if(hc){(bc[cd]=bc[cd]||[]).push(e.cramps);tot++;if(e.cramps>0){withC++;(cdays[cd]=cdays[cd]||0);cdays[cd]++}}
+    if(e.energy)(be[cd]=be[cd]||[]).push(e.energy);
+    used[st]=1;n++;if(cd>maxDay)maxDay=cd;
+  });
+  var head='<div class="per-card"><h2>The rhythm of a moon</h2>';
+  if(!n)return head+'<p class="per-note-t">Rate your cramps (0 to 5) and your energy (1 to 5) in your daily letters, and a gentle chart will bloom here, showing how they rise and fall across your cycle.</p></div>';
+  function mean(a){return a.reduce(function(x,y){return x+y},0)/a.length}
+  function series(o){return Object.keys(o).map(Number).sort(function(a,b){return a-b}).map(function(d){return {d:d,v:mean(o[d])}})}
+  var sc=series(bc),se=series(be);
+  var N=Math.min(45,Math.max(14,A.avgC||S.set.cycle,maxDay));
+  var W=320,H=170,pl=24,pr=10,pt=10,pb=26,iw=W-pl-pr,ih=H-pt-pb;
+  function x(d){return pl+(d-1)/(N-1)*iw}
+  function y(v){return H-pb-(v/5)*ih}
+  var svg='<svg class="per-chart" viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Average cramps and energy by cycle day">';
+  var pl_=A.avgP||S.set.period;
+  svg+='<rect class="per-band" x="'+(x(1)-4).toFixed(1)+'" y="'+pt+'" width="'+(x(pl_)-x(1)+8).toFixed(1)+'" height="'+ih+'" rx="6"/>';
+  [0,1,3,5].forEach(function(v){svg+='<line class="per-gl" x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y(v).toFixed(1)+'" y2="'+y(v).toFixed(1)+'"/><text x="'+(pl-6)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v+'</text>'});
+  for(var d=1;d<=N;d+=(d===1?6:7))svg+='<text x="'+x(d).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+d+'</text>';
+  function line(s,c){
+    if(!s.length)return '';
+    var p=s.map(function(q,i){return (i?'L':'M')+x(q.d).toFixed(1)+' '+y(q.v).toFixed(1)}).join(' ');
+    var o=s.length>1?'<path class="per-l'+c+'" d="'+p+'"/>':'';
+    return o+s.map(function(q){return '<circle class="per-d'+c+'" cx="'+x(q.d).toFixed(1)+'" cy="'+y(q.v).toFixed(1)+'" r="3.2"/>'}).join('');
+  }
+  svg+=line(sc,1)+line(se,2)+'</svg>';
+  var cycles=Object.keys(used).length;
+  var out=head+svg+'<div class="per-leg"><span><i style="background:var(--rose2)"></i>Cramps</span><span><i style="background:var(--sage2)"></i>Energy</span><span><i style="background:var(--rose);opacity:.4"></i>Bloom days</span></div>';
+  out+='<div class="per-note-t" style="margin-top:6px">Averaged by day of the moon, across '+cycles+' cycle'+(cycles>1?'s':'')+'. The more you log, the clearer it becomes.</div>';
+  function peak(s,hi){return s.reduce(function(m,q){return (hi?q.v>m.v:q.v<m.v)?q:m},s[0])}
+  if(tot){
+    var dl=Object.keys(cdays).map(Number).sort(function(a,b){return a-b}),rs=[],i0=0;
+    for(var i=1;i<=dl.length;i++){if(i===dl.length||dl[i]!==dl[i-1]+1){rs.push(dl[i0]===dl[i-1]?''+dl[i0]:dl[i0]+'–'+dl[i-1]);i0=i}}
+    if(!withC)out+='<p class="per-note-t">No cramps at all on the '+tot+' day'+(tot>1?'s':'')+' you have recorded. How lovely.</p>';
+    else out+='<p class="per-note-t">Cramps have visited on day'+(dl.length>1?'s':'')+' '+rs.join(', ')+' of your moon. '+Math.round((tot-withC)/tot*100)+'% of the days you recorded were cramp-free.</p>';
+  }
+  if(sc.length>=3){var pc=peak(sc,true);if(pc.v>=1)out+='<p class="per-note-t">Cramps tend to be strongest around day '+pc.d+' of your moon (about '+pc.v.toFixed(1)+' of 5).</p>'}
+  if(se.length>=3){var lo=peak(se,false),hi=peak(se,true);if(hi.v-lo.v>=1)out+='<p class="per-note-t">Your energy is lowest near day '+lo.d+' and shines brightest near day '+hi.d+'.</p>'}
+  return out+'</div>';
+}
+/* ---------- the cycle sky ---------- */
+var SKY=[
+ {n:'Cassiopeia',b:'The Queen upon her throne',s:[[8,62],[28,30],[48,52],[68,22],[92,44]],e:[[0,1],[1,2],[2,3],[3,4]]},
+ {n:'The Great Bear',b:'The Big Dipper, the ladle of the night',s:[[6,30],[22,38],[38,42],[54,46],[57,68],[84,72],[88,48]],e:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,3]]},
+ {n:'Lyra',b:'The Harp of a thousand lullabies',s:[[50,8],[34,38],[62,50],[68,80],[40,70]],e:[[0,1],[0,2],[1,2],[1,4],[2,3],[4,3]]},
+ {n:'Orion',b:'The Hunter, guardian of winter nights',s:[[30,10],[72,14],[38,50],[50,48],[62,46],[32,90],[74,88]],e:[[0,2],[1,4],[2,3],[3,4],[2,5],[4,6],[0,1]]},
+ {n:'Leo',b:'The Lion, bold and golden',s:[[18,82],[22,64],[30,48],[34,30],[44,16],[56,22],[74,38],[70,62],[94,52]],e:[[0,1],[1,2],[2,3],[3,4],[4,5],[2,6],[6,8],[8,7],[7,2]]}
+];
+var SKYN=SKY.reduce(function(a,c){return a+c.s.length},0);
+var skyC=null,skySel=null;
+function skyOffset(c){var o=0;for(var i=0;i<c;i++)o+=SKY[i].s.length;return o}
+function skyCycle(slot,n){
+  if(n<1)return -1;
+  var r=Math.floor((n-1)/SKYN),idx=r*SKYN+slot;
+  if(idx>=n)idx-=SKYN;
+  return idx>=0?idx:-1;
+}
+function skyBg(seed){
+  var o='',x=seed*9301+49297;
+  for(var i=0;i<46;i++){
+    x=(x*9301+49297)%233280;var a=x/233280;
+    x=(x*9301+49297)%233280;var b=x/233280;
+    x=(x*9301+49297)%233280;var c=x/233280;
+    o+='<circle cx="'+(a*320).toFixed(1)+'" cy="'+(b*250).toFixed(1)+'" r="'+(0.4+c*0.9).toFixed(2)+'" fill="#fff" opacity="'+(0.25+c*0.5).toFixed(2)+'"'+(i%5===0?' class="per-tw" style="animation-delay:'+(i%7*0.6).toFixed(1)+'s"':'')+'/>';
+  }
+  return o;
+}
+function sparkle(cx,cy,r){
+  var k=r*0.28;
+  return 'M'+cx+' '+(cy-r)+'Q'+(cx+k)+' '+(cy-k)+' '+(cx+r)+' '+cy+'Q'+(cx+k)+' '+(cy+k)+' '+cx+' '+(cy+r)+'Q'+(cx-k)+' '+(cy+k)+' '+(cx-r)+' '+cy+'Q'+(cx-k)+' '+(cy-k)+' '+cx+' '+(cy-r)+'Z';
+}
+function skyHTML(A){
+  var n=A.P.length,last=n>0?(n-1)%SKYN:0;
+  var lastC=0,acc=0;
+  for(var q=0;q<SKY.length;q++){if(last<acc+SKY[q].s.length){lastC=q;break}acc+=SKY[q].s.length}
+  if(skyC===null||skyC>=SKY.length)skyC=lastC;
+  var C=SKY[skyC],off=skyOffset(skyC),rd=n>0?Math.floor((n-1)/SKYN)+1:1;
+  var pts=C.s.map(function(p){return [40+p[0]*2.4,34+p[1]*1.9]});
+  var lit=C.s.map(function(_,j){return skyCycle(off+j,n)});
+  var litN=lit.filter(function(x){return x>=0}).length;
+  var curIdx=n>0?n-1:-1;
+  var svg='<svg class="per-skysvg" viewBox="0 0 320 250" role="img" aria-label="'+esc(C.n)+' constellation"><defs><radialGradient id="per-glow"><stop offset="0" stop-color="#ffe9b8" stop-opacity=".9"/><stop offset="1" stop-color="#ffe9b8" stop-opacity="0"/></radialGradient><radialGradient id="per-glowr"><stop offset="0" stop-color="#f4b6c9" stop-opacity=".8"/><stop offset="1" stop-color="#f4b6c9" stop-opacity="0"/></radialGradient></defs>'+skyBg(skyC+3);
+  C.e.forEach(function(ed){
+    var a=pts[ed[0]],b=pts[ed[1]],on=lit[ed[0]]>=0&&lit[ed[1]]>=0;
+    svg+='<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'" stroke="'+(on?'#e9c98a':'#8a86b8')+'" stroke-width="'+(on?1.2:.7)+'" stroke-dasharray="'+(on?'':'2 4')+'" opacity="'+(on?.85:.35)+'"/>';
+  });
+  pts.forEach(function(p,j){
+    var ci=lit[j],x=p[0].toFixed(1),y=p[1].toFixed(1);
+    if(ci<0){svg+='<circle cx="'+x+'" cy="'+y+'" r="3.2" fill="none" stroke="#9c97c9" stroke-width=".8" stroke-dasharray="1.5 2" opacity=".6"/>';return}
+    var kept=!!(S.poems[A.P[ci].start]||{}).keep,cur=ci===curIdx,sel=ci===skySel;
+    svg+='<circle cx="'+x+'" cy="'+y+'" r="'+(kept?20:15)+'" fill="url(#'+(kept?'per-glow':'per-glowr')+')"'+(cur?' class="per-pulse"':'')+'/>';
+    svg+='<path d="'+sparkle(+x,+y,kept?8.5:6.5)+'" fill="'+(kept?'#ffe3a3':'#fff4f7')+'"'+(cur?' class="per-tw"':'')+'/>';
+    svg+='<circle cx="'+x+'" cy="'+y+'" r="17" fill="transparent" data-star="'+ci+'" style="cursor:pointer"/>';
+  });
+  svg+='</svg>';
+  var dots='';
+  for(var d=0;d<SKY.length;d++)dots+='<button class="per-skydot'+(d===skyC?' on':'')+'" data-skyd="'+d+'" aria-label="'+esc(SKY[d].n)+'"></button>';
+  var h='<div class="per-card per-sky"><div class="per-skyhead"><button data-skyn="-1" aria-label="Previous constellation">‹</button><div><h2>'+esc(C.n)+'</h2><small>'+esc(C.b)+'</small></div><button data-skyn="1" aria-label="Next constellation">›</button></div>'+svg+
+    '<div class="per-skydots">'+dots+'</div>'+
+    '<div class="per-skycap">'+(n===0?'Your first bloom will light the first star.':(litN===C.s.length?'✦ Complete · '+litN+' moons lit':litN+' of '+C.s.length+' stars lit'))+(rd>1?' · sky no. '+rd:'')+'</div>';
+  var sel=skySel;
+  if(sel===null||sel>=n||lit.indexOf(sel)<0)sel=lit.filter(function(x){return x>=0}).pop();
+  if(sel!==undefined&&sel!==null&&sel>=0&&n>0){
+    var A2=A,p=A2.P[sel],ps=poemState(A2,sel),f=cycleFacts(A2,sel);
+    var mo=parse(p.start).toLocaleDateString('en-US',{month:'long'});
+    h+='<div class="per-skyinfo"><b>The '+esc(mo)+' Moon</b><span>'+esc(fmt(p.start,{month:'short',day:'numeric',year:'numeric'}))+(f.len!==null?' · '+f.len+'-day moon':' · still unfolding')+'</span>'+
+      ((ps.kept||ps.custom)?'<p>'+esc(ps.text)+'</p>':'<p class="per-skyhint">No poem kept for this star yet. Keep one and it turns to gold.</p>')+
+      '<button class="per-btn" data-skypoem="1">'+((ps.kept||ps.custom)?'Open my poems':'Choose a poem ✿')+'</button></div>';
+  }
+  return h+'</div>';
+}
+function skyClick(ev){
+  var st=ev.target.closest('[data-star]');
+  if(st){skySel=+st.getAttribute('data-star');renderStars();return true}
+  var b=ev.target.closest('button');if(!b)return false;
+  if(b.hasAttribute('data-skyn')){skyC=(skyC+(+b.getAttribute('data-skyn'))+SKY.length)%SKY.length;skySel=null;renderStars();return true}
+  if(b.hasAttribute('data-skyd')){skyC=+b.getAttribute('data-skyd');skySel=null;renderStars();return true}
+  if(b.hasAttribute('data-skypoem')){lview='poems';setTab('letters');return true}
+  return false;
+}
+
+$('#per-v-stars').addEventListener('click',function(ev){if(skyClick(ev))return;if(ev.target.closest('[data-sum]'))openSummary()});
+function renderStars(){
+  var el=$('#per-v-stars'),A=analyse();
+  if(!A.P.length){
+    el.innerHTML=skyHTML(A)+'<div class="per-card"><h2>The moon in numbers</h2><p class="per-note-t">Nothing to chart yet. Mark your first bloom in the Almanac and the stars will begin to align.</p></div>';
+    return;
+  }
+  var h='<div class="per-card"><h2>The moon in numbers</h2><div class="per-stats">';
+  h+='<div class="per-stat"><b>'+(A.avgC?A.avgC:'—')+'</b><span>average moon (days)</span></div>';
+  h+='<div class="per-stat"><b>'+(A.avgP||'—')+'</b><span>average bloom (days)</span></div>';
+  h+='<div class="per-stat"><b>'+A.P.length+'</b><span>blooms recorded</span></div>';
+  var rng=A.lens.length>1?(Math.min.apply(null,A.lens)+'–'+Math.max.apply(null,A.lens)):'—';
+  h+='<div class="per-stat"><b>'+rng+'</b><span>recent range (days)</span></div></div>';
+  if(!A.avgC)h+='<p class="per-note-t">Log at least two blooms to learn your own rhythm. Until then, predictions use your Book settings.</p>';
+  else if(A.lens.length>=3){
+    var spread=Math.max.apply(null,A.lens)-Math.min.apply(null,A.lens);
+    h+='<p class="per-note-t">'+(spread<=7?'Your moons keep a fairly steady rhythm.':'Your moons vary by about '+spread+' days. That is common, and predictions are shown as estimates.')+'</p>';
+    if(A.avgC<21||A.avgC>35)h+='<p class="per-note-t">Cycles shorter than 21 or longer than 35 days on average are worth mentioning to a healthcare provider.</p>';
+  }
+  h+='</div>';
+
+  var g=A.good.slice(-8);
+  if(g.length){
+    var W=320,H=160,pl=22,pb=24,pt=18,n=g.length,bw=Math.min(30,(W-pl*2)/n-8);
+    var mx=Math.max.apply(null,g.map(function(c){return c.len}).concat([A.avgC||0]))+4;
+    var svg='<svg class="per-chart" viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Recent cycle lengths">';
+    g.forEach(function(c,i){
+      var x=pl+i*((W-pl*2)/n)+((W-pl*2)/n-bw)/2,bh=(c.len/mx)*(H-pb-pt),y=H-pb-bh;
+      svg+='<rect class="per-b" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="6"/>';
+      svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(y-4).toFixed(1)+'" text-anchor="middle">'+c.len+'</text>';
+      svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+esc(fmt(c.from,{month:'short'}))+'</text>';
+    });
+    if(A.avgC){var ay=H-pb-(A.avgC/mx)*(H-pb-pt);svg+='<line class="per-avg" x1="'+pl+'" x2="'+(W-pl)+'" y1="'+ay.toFixed(1)+'" y2="'+ay.toFixed(1)+'"/>'}
+    svg+='</svg>';
+    h+='<div class="per-card"><h2>Length of each moon</h2>'+svg+'<div class="per-note-t">Bars show days from one bloom to the next. The dashed line is your average.</div></div>';
+  }
+
+  h+=rhythmCard(A);
+
+  var sc={},mc={};
+  Object.keys(S.days).forEach(function(d){
+    var e=S.days[d];(e.sym||[]).forEach(function(s){sc[s]=(sc[s]||0)+1});
+    if(e.mood)mc[e.mood]=(mc[e.mood]||0)+1;
+  });
+  function bars(o){
+    var k=Object.keys(o).sort(function(a,b){return o[b]-o[a]}).slice(0,6);
+    if(!k.length)return '<p class="per-note-t">Nothing logged yet.</p>';
+    var m=o[k[0]];
+    return k.map(function(x){return '<div class="per-bar"><em>'+esc(x)+'</em><div><i style="width:'+Math.round(o[x]/m*100)+'%"></i></div><span>'+o[x]+'</span></div>'}).join('');
+  }
+  h+='<div class="per-card"><h2>Whispers of the body</h2><h3>Most common symptoms</h3>'+bars(sc)+'<h3>Moods</h3>'+bars(mc)+'</div>';
+
+  h+='<div class="per-card"><h2>Past blooms</h2><ul class="per-hist">';
+  A.P.slice().reverse().slice(0,12).forEach(function(p,idx,arr){
+    var i=A.P.length-1-idx,next=A.P[i+1];
+    var len=diff(p.start,p.end)+1;
+    var pk=0,pg=0;Object.keys(S.days).forEach(function(d){var e=S.days[d];if(typeof e.cramps==='number'&&d>=p.start&&(!next||d<next.start)){pg++;if(e.cramps>pk)pk=e.cramps}});
+    var cl=next?diff(p.start,next.start)+' day moon':'current moon';
+    h+='<li><span>'+esc(fmt(p.start))+(p.end!==p.start?' – '+esc(fmt(p.end)):'')+'<br><small>'+len+' day'+(len>1?'s':'')+(pk?' · cramps up to '+pk+' of 5':(pg?' · no cramps':''))+'</small></span><small style="text-align:right">'+cl+'</small></li>';
+  });
+  h+='</ul></div>';
+  h+='<div class="per-card"><h2>For my next visit</h2><p class="per-note-t">A clear one-page summary of your recent cycles to print or save as a PDF, with a few gentle points that may be worth mentioning to a healthcare provider.</p><button class="per-btn main" data-sum="1">Prepare a doctor-visit summary</button></div>';
+  el.innerHTML=skyHTML(A)+expectCard(A)+h;
+}
+
+/* ---------- book (settings) ---------- */
+var GUIDE={
+  start:'<p>Tap any day in the Almanac, or the <b>✎ Write today\'s letter</b> button, to open a letter for that day. Choose a flow to mark a bloom (period day), then add symptoms, a mood, or a few words.</p><ul><li>Log every day of your period. The first day becomes the start of a new moon (cycle).</li><li>Swipe the calendar left or right to change months.</li><li>Rate your cramps from 0 (none) to 5, and your energy from 1 to 5. A 0 is recorded too, so the almanac knows the days you felt fine. Tap a number again to clear it. The Stars page charts them by day of your moon.</li><li>Days with symptoms, mood or notes show a small gold dot.</li></ul>',
+  colours:'<ul><li><b>Solid rose</b>: logged bloom. Deeper rose means heavier flow.</li><li><b>Dashed rose</b>: expected bloom.</li><li><b>Soft green</b>: estimated fertile glow.</li><li><b>Green with gold ring</b>: estimated ovulation day.</li><li><b>Gold ring</b>: today.</li></ul>',
+  predict:'<p>After your second logged period, the almanac averages your last six moons to estimate the next bloom. Until then it uses the cycle length in your settings.</p><p>Ovulation is estimated at 14 days before the next bloom (you can change this below), with a fertile glow from five days before to one day after. These are statistical estimates and can be wrong, especially for irregular cycles. <b>Do not use them as contraception.</b></p>',
+  privacy:'<p>Everything lives only on this device, in this browser or Home Screen app. Nothing is sent anywhere, and no internet is needed.</p><ul><li>Home Screen apps on iPhone keep separate storage from Safari tabs, so open the same one each time.</li><li>Use <b>Save a backup</b> regularly and keep the file somewhere safe, such as Files or your Google Drive. Clearing website data erases the almanac.</li><li>The Veil is a privacy screen with a four-digit code. It hides the app from casual eyes but is not encryption, and exported backups are not protected.</li></ul>',
+  moods:'<p>There are no right or wrong feelings here. Moods are recorded so you can notice how your heart moves with the moon, and be kinder to it.</p><dl class="per-moodlist">'+Object.keys(MOODD).map(function(k){return '<dt>'+k+'</dt><dd>'+MOODD[k]+'</dd>'}).join('')+'</dl>',
+  remind:'<p>Once you have logged a period, a soft note appears at the top of the Almanac in the days before your bloom is expected, on the day itself, and for up to two weeks if it runs late.</p><ul><li>Each kind of note has its own chime: a soft rising pair when your bloom is near, a bright little arpeggio on the day, and a low gentle pair when it is late. Tap the ♪ buttons in the Book to hear them.</li><li>A chime plays once a day, after your first tap in the app. It follows your phone volume and silent switch.</li><li>Tap the ✕ to hush it until tomorrow.</li><li>Choose how many days ahead it begins, or turn it off, in the Book.</li><li>It only appears when you open the almanac. A page saved on your Home Screen cannot send notifications on its own.</li></ul>',
+  rituals:'<p>The <b>Wellness</b> page is your everyday garden, and it is for every day, not only the days of your period.</p><ul><li><b>Sleep</b> in half-hour steps and <b>water</b> glass by glass, with progress toward your goals. Set the goals under Edit my lists &amp; goals at the bottom of the page.</li><li><b>Movement</b>, <b>skin care</b> (morning and evening steps, plus how your skin feels) and <b>medicines</b> are tap-to-select. Add or remove your own steps and products with Edit my lists &amp; goals at the bottom of the page.</li><li><b>Repeat yesterday</b> copies yesterday morning or evening routine in one tap.</li><li>Tap a day in <b>This week</b> to log or fix that day. Everything saves as you tap.</li><li><b>Discharge &amp; spotting</b> live in the daily letter. Use Spotting for light spotting between blooms so it is not counted as a period.</li><li>The <b>Private page</b> in the daily letter is for intimacy notes. Turn it on in the Book once a veil is drawn. It never appears on the calendar, in Stars or in printouts, but backup files are not protected.</li></ul>',
+  letters:'<p>The <b>Letters</b> page is a little box of keepsakes holding every daily letter you have written.</p><ul><li>Search the words you wrote, or filter by mood, symptom or month.</li><li>Tap the ☆ on a letter to keep it close, then use <b>Kept only</b> to see just those.</li><li>Tap a letter to open and edit it. Your private page, sleep, water and skin care never appear here.</li></ul>',
+  visit:'<p>Under <b>Stars</b>, the <b>Doctor-visit summary</b> turns your diary into one tidy page.</p><ul><li>Choose the last 3, 6 or 12 periods, and whether to include medicines and wellness, or your written notes (off by default).</li><li>It lists cycle and bleeding lengths, heaviest flow, peak cramps, common symptoms, and a few simple checks that may be worth mentioning, such as very short or long cycles, long bleeding, or spotting between periods.</li><li>Tap <b>Save as PDF</b> (or <b>Print</b>). On iPhone, choose Save to Files from the share sheet.</li><li>Your private page is never included. The checks are not a diagnosis.</li></ul>',
+  phases:'<p>Your moon moves through five gentle phases. The almanac names them on your calendar and in <b>What to expect</b>. The timing is an estimate based on your own rhythm, and every body keeps its own time.</p><dl class="per-moodlist"><dt>Bloom</dt><dd><b>What it is:</b> your period, from the first day of bleeding. The womb lining is shed, and hormones sit at their lowest.<br><b>You may notice:</b> cramps, tiredness, a lower back ache, tender breasts, feeling inward or tearful. Some people feel relief and lightness.<br><b>Kind to try:</b> warmth, rest, iron-rich food, slow stretching or a short walk.</dd><dt>Awakening</dt><dd><b>What it is:</b> after your bleeding ends, oestrogen climbs and a new egg begins to ripen.<br><b>You may notice:</b> rising energy, clearer skin, better mood and focus, a wish to begin things.<br><b>Kind to try:</b> fresh plans, movement you enjoy, social evenings.</dd><dt>Fertile glow</dt><dd><b>What it is:</b> the days around ovulation, when pregnancy is most possible. It runs from about five days before ovulation to one day after.<br><b>You may notice:</b> a glow of confidence, more talkative and flirtatious feelings, clearer, stretchy discharge, higher desire.<br><b>Kind to try:</b> water close by, and take care with contraception if pregnancy is not what you want.</dd><dt>Ovulation day</dt><dd><b>What it is:</b> an egg is released, usually about 14 days before your next bloom. It is the brightest point of the moon.<br><b>You may notice:</b> peak energy, a mild twinge on one side, a touch more warmth in the body.<br><b>Kind to try:</b> use the energy for something you love, and eat and drink well.</dd><dt>Quiet moon</dt><dd><b>What it is:</b> the luteal phase. Progesterone rises, then falls if there is no pregnancy, which can bring premenstrual feelings.<br><b>You may notice:</b> bloating, cravings, breast tenderness, restless sleep, sensitivity, low mood or irritability, and skin that breaks out.<br><b>Kind to try:</b> steady sleep, magnesium-rich food, less caffeine, calmer evenings, and gentleness with yourself.</dd></dl><p>These are general patterns, not medical advice. Your own letters will show how your moon truly feels, and <b>What to expect</b> learns it over time.</p>',
+  expect:'<p><b>What to expect</b> sits at the top of the Stars page, with a short line on the Almanac.</p><ul><li>It reads your own earlier letters: cramps, energy, mood, symptoms and how your skin felt, around the same day of your moon.</li><li>It needs at least two matching days from earlier moons before it says anything personal. Until then you see a general note for the phase.</li><li>These are patterns in your own diary, not predictions of health events, and not medical advice.</li></ul>',
+  care:'<p>This almanac is a diary, not a medical tool. Please speak with a healthcare provider if your bleeding is very heavy, lasts longer than 7 days, comes with severe pain, or your cycles suddenly change, stop, or are consistently shorter than 21 or longer than 35 days.</p>'
+};
+var guideKey='start';
+function renderBook(){
+  var el=$('#per-v-book');
+  var h='<div class="per-card"><h2>Book of Etiquette</h2><select class="per-select" id="per-guide-sel">'+
+    [['start','Getting started'],['colours','What the colours mean'],['moods','The moods of the heart'],['remind','Gentle reminders'],['rituals','Wellness &amp; private pages'],['letters','The letters page'],['visit','Doctor-visit summary'],['phases','The phases of the moon'],['expect','What to expect'],['predict','How predictions work'],['privacy','Privacy &amp; backups'],['care','Caring for yourself']].map(function(o){return '<option value="'+o[0]+'"'+(o[0]===guideKey?' selected':'')+'>'+o[1]+'</option>'}).join('')+
+    '</select><div class="per-guide" id="per-guide">'+GUIDE[guideKey]+'</div></div>';
+
+  h+='<div class="per-card"><h2>Your rhythm</h2><div class="per-note-t">Used for predictions until your own history takes over.</div>'+
+    '<div class="per-row"><label>Cycle length<small>days between blooms</small></label><input type="number" inputmode="numeric" min="20" max="45" id="per-s-cycle" value="'+S.set.cycle+'"></div>'+
+    '<div class="per-row"><label>Bloom length<small>days of bleeding</small></label><input type="number" inputmode="numeric" min="1" max="10" id="per-s-period" value="'+S.set.period+'"></div>'+
+    '<div class="per-row"><label>Luteal phase<small>ovulation to next bloom</small></label><input type="number" inputmode="numeric" min="10" max="16" id="per-s-luteal" value="'+S.set.luteal+'"></div>'+
+    '<h3>Week begins on</h3><div class="per-seg" id="per-seg-week"><button data-w="0" class="'+(S.set.weekStart===0?'on':'')+'">Sunday</button><button data-w="1" class="'+(S.set.weekStart===1?'on':'')+'">Monday</button></div></div>';
+
+  h+='<div class="per-card"><h2>Gentle reminders</h2><div class="per-note-t">A note on the Almanac when your bloom is near or running late. It appears when you open the app; it cannot ring your phone.</div>'+
+    '<div class="per-seg" id="per-seg-rem" style="margin-top:10px"><button data-rem="1" class="'+(S.set.remind?'on':'')+'">On</button><button data-rem="0" class="'+(S.set.remind?'':'on')+'">Off</button></div>'+
+    '<h3>Chimes</h3><div class="per-seg" id="per-seg-snd"><button data-snd="1" class="'+(S.set.sound?'on':'')+'">Sound on</button><button data-snd="0" class="'+(S.set.sound?'':'on')+'">Silent</button></div>'+
+    '<div style="margin-top:6px"><button class="per-btn" data-chime="near">♪ Near</button><button class="per-btn" data-chime="today">♪ Today</button><button class="per-btn" data-chime="late">♪ Late</button></div>'+
+    '<div class="per-row"><label>Begin whispering<small>days before the expected bloom</small></label><input type="number" inputmode="numeric" min="1" max="7" id="per-s-remdays" value="'+S.set.remindDays+'"></div></div>';
+  h+='<div class="per-card"><h2>Private pages</h2><div class="per-note-t">A hidden page in each daily letter for intimacy notes. It appears only while a veil is drawn, and never shows on the calendar, in Stars, or when printing. The veil hides the app but is not encryption, and backup files are not protected.</div>'+
+    '<div class="per-seg" style="margin-top:10px"><button data-int="1" class="'+(S.set.intimacy?'on':'')+'">On</button><button data-int="0" class="'+(S.set.intimacy?'':'on')+'">Off</button></div>'+
+    (S.pin?'':'<div class="per-note-t" style="margin-top:6px">Draw a veil below to use private pages.</div>')+'</div>';
+  h+='<div class="per-card"><h2>Atmosphere</h2><div class="per-seg" id="per-seg-theme">'+
+    [['auto','Auto'],['light','Daylight'],['dark','Moonlit']].map(function(o){return '<button data-t="'+o[0]+'" class="'+(S.theme===o[0]?'on':'')+'">'+o[1]+'</button>'}).join('')+'</div>'+
+    '<h3>The Veil</h3><div class="per-note-t">'+(S.pin?'A veil is drawn over your almanac.':'Add a four-digit code to hide the almanac whenever you leave it.')+'</div>'+
+    '<button class="per-btn main" id="per-pin-set">'+(S.pin?'Change veil':'Draw a veil')+'</button>'+(S.pin?'<button class="per-btn" id="per-pin-off">Lift veil</button>':'')+'</div>';
+
+  h+='<div class="per-card"><h2>Keepsakes</h2><div class="per-note-t">Your data stays on this device. Save a backup now and then.</div><div class="per-wnote">'+(S.lastBackup?'Last backup: '+esc(fmt(S.lastBackup,{month:'long',day:'numeric',year:'numeric'})):'No backup saved yet')+'</div><h3>Remind me to back up</h3><div class="per-seg" id="per-seg-bk">'+[[7,'Weekly'],[14,'Every 2 weeks'],[30,'Monthly'],[0,'Never']].map(function(o){return '<button data-bkd="'+o[0]+'" class="'+(S.set.backupDays===o[0]?'on':'')+'">'+o[1]+'</button>'}).join('')+'</div>'+
+    '<button class="per-btn main" id="per-export">Save a backup</button>'+
+    '<button class="per-btn" id="per-import">Restore a backup</button>'+
+    '<h3>Danger zone</h3><button class="per-btn danger" id="per-erase">Erase everything</button></div>';
+  el.innerHTML=h;
+}
+function clamp(v,a,b,d){v=parseInt(v,10);if(isNaN(v))return d;return Math.max(a,Math.min(b,v))}
+$('#per-v-book').addEventListener('change',function(ev){
+  var t=ev.target;
+  if(t.id==='per-guide-sel'){guideKey=t.value;$('#per-guide').innerHTML=GUIDE[guideKey]}
+  else if(t.id==='per-s-cycle'){S.set.cycle=clamp(t.value,20,45,28);t.value=S.set.cycle;save();refresh(true)}
+  else if(t.id==='per-s-period'){S.set.period=clamp(t.value,1,10,5);t.value=S.set.period;save();refresh(true)}
+  else if(t.id==='per-s-remdays'){S.set.remindDays=clamp(t.value,1,7,3);t.value=S.set.remindDays;S.remDismiss='';save();refresh(true)}
+  else if(t.id==='per-s-luteal'){S.set.luteal=clamp(t.value,10,16,14);t.value=S.set.luteal;save();refresh(true)}
+});
+var eraseT=null;
+$('#per-v-book').addEventListener('click',function(ev){
+  var b=ev.target.closest('button');if(!b)return;
+  if(b.hasAttribute('data-int')){
+    if(b.getAttribute('data-int')==='1'&&!S.pin){toast('Draw a veil first, my dear')}
+    else{S.set.intimacy=b.getAttribute('data-int')==='1';save();renderBook()}
+  }
+  else if(b.hasAttribute('data-chime')){previewChime(b.getAttribute('data-chime'))}
+  else if(b.hasAttribute('data-snd')){S.set.sound=b.getAttribute('data-snd')==='1';save();renderBook()}
+  else if(b.hasAttribute('data-rem')){S.set.remind=b.getAttribute('data-rem')==='1';S.remDismiss='';save();renderBook();renderRemind()}
+  else if(b.hasAttribute('data-w')){S.set.weekStart=+b.getAttribute('data-w');save();renderBook();renderCal()}
+  else if(b.hasAttribute('data-t')){S.theme=b.getAttribute('data-t');save();applyTheme();renderBook()}
+  else if(b.id==='per-pin-set'){setPin()}
+  else if(b.id==='per-pin-off'){askPin('Lift the veil','Enter your code to remove it',function(p){
+    if(hash(p)===S.pin){S.pin=null;S.set.intimacy=false;save();hideLock();renderBook();toast('Veil lifted');return true}return false},true)}
+  else if(b.hasAttribute('data-bkd')){S.set.backupDays=+b.getAttribute('data-bkd');S.bkSnooze='';save();renderBook();renderBackup()}
+  else if(b.id==='per-export'){doExport();renderBook()}
+  else if(b.id==='per-import')$('#per-file').click();
+  else if(b.id==='per-erase'){
+    if(!b.classList.contains('arm')){
+      b.classList.add('arm');b.textContent='Tap again to erase everything for good';
+      clearTimeout(eraseT);eraseT=setTimeout(function(){b.classList.remove('arm');b.textContent='Erase everything'},6000);
+      toast('This cannot be undone');return;
+    }
+    clearTimeout(eraseT);
+    var keepTheme=S.theme;
+    S=clone(DEF);S.theme=keepTheme;S.firstUse=today();
+    lq='';lmood='';lsym='';lmonth='';lfav=false;lsort='new';lshow=30;lview='letters';pedit=null;skySel=null;skyC=null;wday=today();wedit=false;edit=null;
+    save();closeSheet();closeSummary();setTab('almanac');toast('The observatory is clean');
+  }
+});
+
+/* ---------- files: share or download ---------- */
+function deliverFile(name,type,data,title,okMsg){
+  var blob=new Blob([data],{type:type});
+  try{
+    var file=new File([blob],name,{type:type});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:title}).catch(function(){});return}
+  }catch(e){}
+  try{
+    var url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(url)},15000);
+    toast(okMsg||'Saved');
+  }catch(e){toast('Could not save the file')}
+}
+function copyText(t){
+  function fb(){
+    try{var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();var ok=document.execCommand('copy');ta.remove();toast(ok?'Copied ✿':'Could not copy')}catch(e){toast('Could not copy')}
+  }
+  try{navigator.clipboard.writeText(t).then(function(){toast('Copied ✿')},fb)}catch(e){fb()}
+}
+
+/* ---------- a small PDF writer (no libraries, works offline) ---------- */
+var PW={
+ r:[250,333,408,500,500,833,778,180,333,333,500,564,250,333,250,278,500,500,500,500,500,500,500,500,500,500,278,278,564,564,564,444,921,722,667,667,722,611,556,722,722,333,389,722,611,889,722,722,556,722,667,556,611,722,722,944,722,722,611,333,278,333,469,500,333,444,500,444,500,444,333,500,500,278,278,500,278,778,500,500,500,500,333,389,278,500,500,722,500,500,444,480,200,480,541],
+ b:[250,333,555,500,500,1000,833,278,333,333,500,570,250,333,250,278,500,500,500,500,500,500,500,500,500,500,333,333,570,570,570,500,930,722,667,722,722,667,611,778,778,389,500,778,667,944,722,778,611,778,722,556,667,722,722,1000,722,722,667,333,278,333,581,500,333,500,556,444,556,444,333,500,556,278,333,556,278,833,556,500,556,556,444,389,333,556,500,722,500,500,444,394,220,394,520],
+ i:[250,333,420,500,500,833,778,214,333,333,500,675,250,333,250,278,500,500,500,500,500,500,500,500,500,500,333,333,675,675,675,500,920,611,611,667,722,611,611,722,722,333,444,667,556,833,667,722,611,722,611,500,556,722,611,833,611,556,556,389,278,389,422,500,333,500,500,444,500,444,278,500,500,278,278,444,278,722,500,500,500,500,389,389,278,500,444,667,444,444,389,400,275,400,541]
+};
+var PCPW={150:500,151:1000,145:333,146:333,147:444,148:444,133:1000,149:350,183:250};
+var PCPM={8211:150,8212:151,8216:145,8217:146,8220:147,8221:148,8230:133,8226:149};
+function pEnc(str){
+  var out='';
+  Array.from(String(str)).forEach(function(ch){
+    var c=ch.codePointAt(0);
+    if(c>=32&&c<127)out+=ch;
+    else if(PCPM[c])out+=String.fromCharCode(PCPM[c]);
+    else if(c>=160&&c<=255)out+=String.fromCharCode(c);
+    else if(c===9||c===10||c===13)out+=' ';
+    else out+='?';
+  });
+  return out;
+}
+function pEsc(s){
+  var o='';
+  for(var i=0;i<s.length;i++){
+    var c=s.charCodeAt(i),ch=s.charAt(i);
+    if(ch==='('||ch===')'||ch==='\\')o+='\\'+ch;
+    else if(c<32||c>126)o+='\\'+('00'+c.toString(8)).slice(-3);
+    else o+=ch;
+  }
+  return o;
+}
+function pW(s,f,size){
+  var t=PW[f],w=0;
+  for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);w+=(c>=32&&c<127)?t[c-32]:(PCPW[c]||500)}
+  return w*size/1000*1.01;
+}
+function pdfBuild(streams,title){
+  var objs=['','<< /Type /Catalog /Pages 2 0 R >>','',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold /Encoding /WinAnsiEncoding >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Times-Italic /Encoding /WinAnsiEncoding >>'];
+  var kids=[];
+  streams.forEach(function(st,i){
+    var pid=6+i*2,cid=pid+1;
+    kids.push(pid+' 0 R');
+    objs[pid]='<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents '+cid+' 0 R >>';
+    objs[cid]='<< /Length '+st.length+' >>\nstream\n'+st+'\nendstream';
+  });
+  objs[2]='<< /Type /Pages /Kids ['+kids.join(' ')+'] /Count '+streams.length+' >>';
+  var info=objs.length;
+  objs[info]='<< /Title ('+pEsc(pEnc(title))+') /Producer (The Observatory) >>';
+  var out='%PDF-1.4\n',offs=[],i;
+  for(i=1;i<objs.length;i++){offs[i]=out.length;out+=i+' 0 obj\n'+objs[i]+'\nendobj\n'}
+  var xr=out.length;
+  out+='xref\n0 '+objs.length+'\n0000000000 65535 f \n';
+  for(i=1;i<objs.length;i++)out+=String(offs[i]).padStart(10,'0')+' 00000 n \n';
+  out+='trailer\n<< /Size '+objs.length+' /Root 1 0 R /Info '+info+' 0 R >>\nstartxref\n'+xr+'\n%%EOF';
+  return out;
+}
+function makePDF(root,title){
+  var PWd=595.28,PH=841.89,M=50,CW=PWd-2*M,pages=[],cur=null,y=0;
+  var COL={rose:[.55,.24,.37],ink:[.23,.16,.2],gray:[.48,.39,.44],gold:[.79,.64,.36],bd:[.91,.83,.84],ln:[.72,.64,.67]};
+  var FN={r:'F1',b:'F2',i:'F3'};
+  function np(){cur=[];pages.push(cur);y=M}
+  function room(h){if(y+h>PH-M-14)np()}
+  function text(x,yb,str,f,size,c,cs){
+    cur.push('BT '+c.join(' ')+' rg /'+FN[f]+' '+size+' Tf '+(cs||0)+' Tc 1 0 0 1 '+x.toFixed(2)+' '+(PH-yb).toFixed(2)+' Tm ('+pEsc(pEnc(str))+') Tj ET');
+  }
+  function rule(x1,x2,yy,c,wd){cur.push(c.join(' ')+' RG '+wd+' w '+x1.toFixed(2)+' '+(PH-yy).toFixed(2)+' m '+x2.toFixed(2)+' '+(PH-yy).toFixed(2)+' l S')}
+  function runs(node,f,out){
+    [].forEach.call(node.childNodes,function(n){
+      if(n.nodeType===3)out.push({t:n.textContent,f:f});
+      else if(n.nodeType===1){var tn=n.tagName;runs(n,(tn==='B'||tn==='STRONG')?'b':((tn==='I'||tn==='EM')?'i':f),out)}
+    });
+    return out;
+  }
+  function tokens(rs){
+    var tk=[];
+    rs.forEach(function(r){String(r.t).split(/(\s+)/).forEach(function(s){if(s==='')return;var sp=/^\s+$/.test(s);tk.push({t:sp?' ':s,f:r.f,sp:sp})})});
+    return tk;
+  }
+  function wrap(tk,width,size){
+    var lines=[],line=[],lw=0;
+    function trim(){while(line.length&&line[line.length-1].sp){lw-=line[line.length-1].w;line.pop()}}
+    tk.forEach(function(k){
+      var w=pW(pEnc(k.t),k.f,size);
+      if(k.sp){if(!line.length)return;line.push({t:' ',f:k.f,w:w,sp:true});lw+=w;return}
+      if(lw+w>width&&line.length){trim();lines.push(line);line=[];lw=0}
+      line.push({t:k.t,f:k.f,w:w});lw+=w;
+    });
+    trim();
+    if(line.length)lines.push(line);
+    return lines;
+  }
+  function drawLines(lines,x,width,size,lead,color,align){
+    lines.forEach(function(line){
+      room(lead);
+      var tw=line.reduce(function(a,it){return a+it.w},0),cx=align==='center'?x+(width-tw)/2:x;
+      line.forEach(function(it){if(!it.sp)text(cx,y+size,it.t,it.f,size,color);cx+=it.w});
+      y+=lead;
+    });
+  }
+  function para(node,o){
+    o=o||{};
+    var size=o.size||10.5,ind=o.indent||0,lead=size*1.4,color=o.color||COL.ink;
+    var lines=wrap(tokens(runs(node,o.font||'r',[])),CW-ind,size);
+    if(o.bullet&&lines.length){room(lead);text(M+4,y+size,'•','r',size,color)}
+    drawLines(lines,M+ind,CW-ind,size,lead,color,o.align);
+    y+=(o.after===undefined?4:o.after);
+  }
+  function table(tb){
+    var rows=[].slice.call(tb.rows);if(!rows.length)return;
+    var n=rows[0].cells.length,fr=n===2?[.36,.64]:(n===6?[.21,.13,.08,.12,.26,.20]:Array.apply(null,Array(n)).map(function(){return 1/n}));
+    var size=9.5,lead=size*1.34,pad=3.5;
+    rows.forEach(function(tr){
+      var cells=[].slice.call(tr.cells);
+      var ls=cells.map(function(c,i){return wrap(tokens([{t:c.textContent,f:c.tagName==='TH'?'b':'r'}]),CW*fr[i]-2*pad,size)});
+      var mx=Math.max.apply(null,ls.map(function(l){return l.length||1})),h=mx*lead+2*pad;
+      room(h);
+      var xx=M;
+      cells.forEach(function(c,i){
+        var colr=c.tagName==='TH'?COL.rose:(c.className==='k'?COL.gray:COL.ink),yy=y+pad;
+        ls[i].forEach(function(line){var cx=xx+pad;line.forEach(function(it){if(!it.sp)text(cx,yy+size,it.t,it.f,size,colr);cx+=it.w});yy+=lead});
+        xx+=CW*fr[i];
+      });
+      rule(M,M+CW,y+h,COL.bd,.6);
+      y+=h;
+    });
+    y+=6;
+  }
+  np();
+  [].forEach.call(root.children,function(el){
+    var tn=el.tagName,cl=el.className||'';
+    if(tn==='H1'){y+=4;text(M+CW/2-pW(pEnc(el.textContent),'b',22)/2,y+22,el.textContent,'b',22,COL.rose);y+=32}
+    else if(cl==='sd-sub'){para(el,{size:10,font:'i',color:COL.gray,align:'center',after:4})}
+    else if(tn==='HR'){rule(M,M+CW,y+2,COL.gold,1.5);y+=14}
+    else if(tn==='H3'){room(46);y+=10;text(M,y+9.5,el.textContent.toUpperCase(),'b',9.5,COL.rose,1);y+=18}
+    else if(tn==='TABLE')table(el);
+    else if(cl==='sd-scroll'){var tb=el.querySelector('table');if(tb)table(tb)}
+    else if(tn==='P'){var small=/12px/.test(el.getAttribute('style')||'');para(el,small?{size:8.5,color:COL.gray,font:'i'}:{size:10.5})}
+    else if(tn==='UL'){[].forEach.call(el.children,function(li){para(li,{indent:16,bullet:true,after:2})});y+=4}
+    else if(cl==='sd-line'){room(28);rule(M,M+CW,y+22,COL.ln,.8);y+=28}
+    else if(cl==='sd-foot'){y+=10;para(el,{size:8.5,font:'i',color:COL.gray,align:'center'})}
+  });
+  var total=pages.length;
+  pages.forEach(function(pg,i){cur=pg;var s='Page '+(i+1)+' of '+total;text(PWd/2-pW(s,'r',8)/2,PH-26,s,'r',8,COL.gray)});
+  return pdfBuild(pages.map(function(p){return '1 0.98 0.965 rg 0 0 '+PWd+' '+PH+' re f\n'+p.join('\n')}),title);
+}
+
+/* ---------- poems of the moon ---------- */
+var lview='letters',pedit=null;
+function ordn(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])}
+var POEM_MOOD={
+  Radiant:['I carried a small lantern of light through the weeks.','Joy sat close beside me, like sunlight on a windowsill.'],
+  Calm:['The days moved like moonlit water, unhurried and clear.','A quiet settled over me, gentle as a folded letter.'],
+  Tender:['My heart was soft as petals, and I let it be so.','Small kindnesses felt like flowers left at my door.'],
+  Anxious:['Restless butterflies visited, and by morning they had flown.','Worries fluttered past like moths, and none stayed long.'],
+  Irritable:['Thorns showed among the roses, yet the garden held.','Patience wore thin as lace, and I forgave myself for it.'],
+  Low:['Grey hours came and went, and I rested through them.','I kept the curtains drawn and let the quiet hold me.'],
+  Weepy:['Rain fell often, and the garden drank it gladly.','Tears came like soft weather, and left everything washed clean.']
+};
+var POEM_EN={
+  high:['Energy rose like morning, and I followed it outdoors.','I felt bright and quick as a swallow in spring.'],
+  low:['I moved slowly, and was gentle with myself.','The days asked for tea and stillness, and I answered.'],
+  mid:['The days passed in a quiet rhythm of their own.','Ordinary hours turned golden when I looked at them kindly.']
+};
+function seedOf(start,v){var n=0;for(var i=0;i<start.length;i++)n+=start.charCodeAt(i)*(i+3);return n+v}
+function cycleFacts(A,i){
+  var p=A.P[i],nx=A.P[i+1],endD=nx?add(nx.start,-1):today(),mo={},en=[];
+  Object.keys(S.days).forEach(function(d){
+    if(d<p.start||d>endD)return;
+    var e=S.days[d];
+    if(e.mood)mo[e.mood]=(mo[e.mood]||0)+1;
+    if(e.energy>0)en.push(e.energy);
+  });
+  var top=Object.keys(mo).sort(function(a,b){return mo[b]-mo[a]})[0]||null;
+  return {start:p.start,end:p.end,len:nx?diff(p.start,nx.start):null,mood:top,energy:en.length?en.reduce(function(a,b){return a+b},0)/en.length:null};
+}
+function poemFor(A,i,v){
+  var f=cycleFacts(A,i),sd=seedOf(f.start,0),d=parse(f.start);
+  var month=d.toLocaleDateString('en-US',{month:'long'});
+  var open=['My bloom came on the '+ordn(d.getDate())+' of '+month+', soft as a petal unfolding.','On the '+ordn(d.getDate())+' of '+month+', the moon opened her garden once more.',month+' began its moon on the '+ordn(d.getDate())+', and I met her with open hands.'];
+  var mid=f.mood?POEM_MOOD[f.mood]:(f.energy===null?POEM_EN.mid:(f.energy>=3.5?POEM_EN.high:(f.energy<2.5?POEM_EN.low:POEM_EN.mid)));
+  var close;
+  if(f.len===null)close=['And the moon is still turning.','This verse is unfinished, as the moon is not yet done.'];
+  else if(f.len<24)close=['Quick as a swallow, the moon came round in '+f.len+' days.','In only '+f.len+' days she returned, and I welcomed her.'];
+  else if(f.len>32)close=['The moon took her time: '+f.len+' days of waiting.',f.len+' days I waited, and she came when she was ready.'];
+  else close=['And after '+f.len+' days, the moon came round again.',f.len+' days, and the moon had turned once more.'];
+  return [open[(sd+v)%3],mid[(sd+v*3)%2],close[(sd+v*5)%2]].join('\n');
+}
+function poemState(A,i){
+  var st=A.P[i].start,rec=S.poems[st]||{};
+  return {start:st,rec:rec,kept:!!rec.keep,custom:!!rec.custom,text:(rec.keep||rec.custom)&&rec.t?rec.t:poemFor(A,i,rec.v||0)};
+}
+function poemsHTML(){
+  var A=analyse();
+  if(!A.P.length)return '<div class="per-card"><h2>Poems of the moon</h2><p class="per-note-t">A little verse will bloom for every cycle once your first period is logged.</p></div>';
+  var kept=0;A.P.forEach(function(p){if((S.poems[p.start]||{}).keep)kept++});
+  var h='<div class="per-card"><h2>Poems of the moon</h2><div class="per-note-t">A little verse for every cycle, drawn from your own letters. Keep the ones you love, edit any line, or write your own.</div>'+
+    '<div class="per-frow"><button class="per-btn" data-pcopy="1">Copy kept poems</button><button class="per-btn" data-ptxt="1">Save as a text file</button></div><div class="per-wnote">'+kept+' kept so far. Kept poems can be carried into your photobook later.</div></div>';
+  for(var i=A.P.length-1;i>=0;i--){
+    var ps=poemState(A,i),f=cycleFacts(A,i),st=ps.start;
+    var sub=esc(fmt(f.start))+(f.len!==null?' to '+esc(fmt(add(f.start,f.len-1)))+' · '+f.len+'-day moon':' · still unfolding');
+    h+='<div class="per-card per-poemcard"><div class="per-lhead"><div><span class="per-ldate">The '+esc(parse(st).toLocaleDateString('en-US',{month:'long'}))+' Moon</span><small>'+sub+'</small></div>'+(ps.kept?'<span class="per-starbtn" style="border:none;background:none" aria-label="Kept">★</span>':'')+'</div>';
+    if(pedit===st){
+      h+='<textarea id="per-ptext" class="per-ptextarea">'+esc(ps.text)+'</textarea><div class="per-sheetbtns"><button data-pcancel="1">Cancel</button><button class="main" data-psave="'+st+'">Keep my words</button></div>';
+    }else{
+      h+='<p class="per-ptext">'+esc(ps.text)+'</p><div class="per-frow" style="justify-content:center">';
+      if(ps.custom)h+='<button class="per-btn" data-pedit="'+st+'">Edit</button><button class="per-btn" data-prelease="'+st+'">Back to a generated verse</button>';
+      else if(ps.kept)h+='<button class="per-btn" data-pedit="'+st+'">Edit</button><button class="per-btn" data-prelease="'+st+'">Release</button>';
+      else h+='<button class="per-btn" data-pnext="'+st+'">Another verse</button><button class="per-btn" data-pedit="'+st+'">Edit</button><button class="per-btn main" data-pkeep="'+st+'">♡ Keep</button>';
+      h+='</div>';
+    }
+    h+='</div>';
+  }
+  return h;
+}
+function renderPoems(){$('#per-lbody').innerHTML=poemsHTML()}
+function keptPoemsText(){
+  var A=analyse(),out=[];
+  A.P.forEach(function(p,i){
+    var ps=poemState(A,i);
+    if(!ps.kept&&!ps.custom)return;
+    var f=cycleFacts(A,i);
+    out.push('The '+parse(p.start).toLocaleDateString('en-US',{month:'long'})+' Moon\n'+fmt(p.start,{month:'long',day:'numeric',year:'numeric'})+(f.len!==null?' · '+f.len+'-day moon':'')+'\n\n'+ps.text);
+  });
+  return out.join('\n\n———\n\n');
+}
+function handlePoemUI(b){
+  var A,st;
+  if(b.hasAttribute('data-lview')){lview=b.getAttribute('data-lview');pedit=null;renderLetters();return true}
+  if(b.hasAttribute('data-pnext')){st=b.getAttribute('data-pnext');var r=S.poems[st]||{};S.poems[st]={v:(r.v||0)+1};save();renderPoems();return true}
+  if(b.hasAttribute('data-pkeep')){
+    st=b.getAttribute('data-pkeep');A=analyse();
+    var idx=A.P.map(function(p){return p.start}).indexOf(st),ps=poemState(A,idx);
+    S.poems[st]={t:ps.text,v:(S.poems[st]||{}).v||0,keep:true};save();renderPoems();toast('Kept close ♡');return true;
+  }
+  if(b.hasAttribute('data-prelease')){st=b.getAttribute('data-prelease');S.poems[st]={v:(S.poems[st]||{}).v||0};save();renderPoems();toast('Released');return true}
+  if(b.hasAttribute('data-pedit')){pedit=b.getAttribute('data-pedit');renderPoems();return true}
+  if(b.hasAttribute('data-pcancel')){pedit=null;renderPoems();return true}
+  if(b.hasAttribute('data-psave')){
+    st=b.getAttribute('data-psave');var t=($('#per-ptext').value||'').trim();
+    if(!t){toast('A poem needs at least a word');return true}
+    S.poems[st]={t:t.slice(0,600),v:(S.poems[st]||{}).v||0,keep:true,custom:true};pedit=null;save();renderPoems();toast('Kept close ♡');return true;
+  }
+  if(b.hasAttribute('data-pcopy')){var tx=keptPoemsText();if(!tx)toast('Keep a poem first, my dear');else copyText(tx);return true}
+  if(b.hasAttribute('data-ptxt')){var t2=keptPoemsText();if(!t2)toast('Keep a poem first, my dear');else deliverFile('moon-poems-'+today()+'.txt','text/plain',t2,'Poems of the moon','Poems saved');return true}
+  return false;
+}
+
+/* ---------- backup ---------- */
+function doExport(){
+  var data=JSON.stringify({app:'moon-almanac',v:1,cv:3,exported:new Date().toISOString(),days:S.days,set:S.set,meds:S.meds,skinSteps:S.skinSteps,mySyms:S.mySyms,poems:S.poems},null,1);
+  var name='observatory-backup-'+today()+'.json';
+  S.lastBackup=today();S.bkSnooze='';save();
+  try{
+    var file=new File([data],name,{type:'application/json'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      navigator.share({files:[file],title:'Observatory backup'}).catch(function(){});
+      return;
+    }
+  }catch(e){}
+  try{
+    var url=URL.createObjectURL(new Blob([data],{type:'application/json'})),a=document.createElement('a');
+    a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(url)},4000);
+    toast('Backup saved');
+  }catch(e){toast('Could not create the backup')}
+}
+$('#per-file').addEventListener('change',function(ev){
+  var f=ev.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var o=JSON.parse(r.result);
+      if(!o||typeof o.days!=='object'||o.days===null)throw 0;
+      if(!confirm('Restore this backup? It will replace what is in your almanac now.'))return;
+      if(o.cv!==3)migrate(o.days,o.cv);
+      if(Array.isArray(o.meds))S.meds=o.meds;
+      if(Array.isArray(o.skinSteps))S.skinSteps=o.skinSteps;
+      if(Array.isArray(o.mySyms))S.mySyms=o.mySyms;
+      S.poems=(o.poems&&typeof o.poems==='object')?o.poems:S.poems||{};
+      S.days=o.days;if(o.set)S.set=Object.assign(S.set,o.set);
+      save();refresh();toast('Backup restored ✿');
+    }catch(e){toast('That does not look like an almanac backup')}
+  };
+  r.readAsText(f);ev.target.value='';
+});
+
+/* ---------- doctor-visit summary ---------- */
+var sumOpts={n:6,well:true,notes:false};
+function flowName(v){var n='';FLOWS.forEach(function(f){if(f[0]===v)n=f[1]});return n||'—'}
+function cnt(o,k){o[k]=(o[k]||0)+1}
+function topList(o,max){
+  return Object.keys(o).sort(function(a,b){return o[b]-o[a]}).slice(0,max).map(function(k){return esc(k)+' ('+o[k]+')'}).join(', ');
+}
+function buildSummary(){
+  var A=analyse(),t=today(),o=sumOpts,P=A.P.slice(-o.n);
+  var head='<div class="sd"><h1>Cycle summary</h1>';
+  if(!P.length)return head+'<p class="sd-sub">The Observatory</p><hr><p>No periods have been recorded yet, so there is nothing to summarise.</p></div>';
+  var base=A.P.length-P.length,from=P[0].start,keys=Object.keys(S.days).sort().filter(function(d){return d>=from&&d<=t});
+  var rows=P.map(function(p,i){
+    var nx=A.P[base+i+1],endEx=nx?nx.start:add(t,1),mx=0,heavy=0,pk=null;
+    keys.forEach(function(d){
+      var e=S.days[d];
+      if(d>=p.start&&d<=p.end){if(e.flow>mx)mx=e.flow;if(e.flow===4)heavy++}
+      if(d>=p.start&&d<endEx&&typeof e.cramps==='number')pk=pk===null?e.cramps:Math.max(pk,e.cramps);
+    });
+    return {start:p.start,end:p.end,bloom:diff(p.start,p.end)+1,len:nx?diff(p.start,nx.start):null,mx:mx,heavy:heavy,pk:pk};
+  });
+  var lens=rows.filter(function(r){return r.len!==null&&r.len>=15&&r.len<=90}).map(function(r){return r.len});
+  var avgC=avg(lens),avgB=avg(rows.map(function(r){return r.bloom}));
+  var lmp=A.P[A.P.length-1].start,since=diff(lmp,t);
+  var sym={},mood={},cr=[],cdays=0,en=[],sl=[],wa=[],moved=0,meds={},spot=[],notes=[],loggedDays=0,hi=0;
+  var spans=A.P;
+  keys.forEach(function(d){
+    var e=S.days[d];
+    if(hasLetter(e)||hasRit(e))loggedDays++;
+    (e.sym||[]).forEach(function(q){cnt(sym,q)});
+    if(e.mood)cnt(mood,e.mood);
+    if(typeof e.cramps==='number'){cr.push(e.cramps);if(e.cramps>0)cdays++;if(e.cramps>=4)hi++}
+    if(e.energy>0)en.push(e.energy);
+    if(typeof e.sleep==='number')sl.push(e.sleep);
+    if(e.water>0)wa.push(e.water);
+    if((e.ex||[]).some(function(x){return x!=='Rest'}))moved++;
+    (e.meds||[]).forEach(function(q){cnt(meds,q)});
+    if(e.dis==='Spotting'&&!spans.some(function(p){return d>=p.start&&d<=p.end}))spot.push(d);
+    if(e.note)notes.push(d);
+  });
+  var span=diff(from,t)+1,peakC=cr.length?Math.max.apply(null,cr):null;
+  var h=head+'<div class="sd-sub">Prepared from my own diary · '+esc(fmt(t,{month:'long',day:'numeric',year:'numeric'}))+'</div><hr>';
+  h+='<h3>At a glance</h3><table>'+
+    '<tr><td class="k">Period covered</td><td>'+esc(fmt(from,{month:'short',day:'numeric',year:'numeric'}))+' to '+esc(fmt(t,{month:'short',day:'numeric',year:'numeric'}))+' ('+span+' days, '+loggedDays+' with entries)</td></tr>'+
+    '<tr><td class="k">Last period began</td><td>'+esc(fmt(lmp,{month:'long',day:'numeric',year:'numeric'}))+' (day '+(since+1)+' of this cycle)</td></tr>'+
+    '<tr><td class="k">Average cycle length</td><td>'+(avgC?avgC+' days'+(lens.length>1?' (range '+Math.min.apply(null,lens)+' to '+Math.max.apply(null,lens)+', from '+lens.length+' cycles)':''):'not enough cycles recorded yet')+'</td></tr>'+
+    '<tr><td class="k">Average length of bleeding</td><td>'+avgB+' day'+(avgB>1?'s':'')+'</td></tr>'+
+    '<tr><td class="k">Periods in this summary</td><td>'+rows.length+'</td></tr></table>';
+  h+='<h3>Recent cycles</h3><div class="sd-scroll"><table><tr><th>Began</th><th>Ended</th><th>Days</th><th>Cycle</th><th>Heaviest flow</th><th>Peak cramps</th></tr>';
+  rows.slice().reverse().forEach(function(r){
+    h+='<tr><td>'+esc(fmt(r.start,{month:'short',day:'numeric',year:'numeric'}))+'</td><td>'+esc(fmt(r.end,{month:'short',day:'numeric'}))+'</td><td>'+r.bloom+'</td><td>'+(r.len!==null?r.len+' d':'current')+'</td><td>'+esc(flowName(r.mx))+(r.heavy?' ('+r.heavy+' heavy)':'')+'</td><td>'+(r.pk===null?'not rated':r.pk+' of 5')+'</td></tr>';
+  });
+  h+='</table></div>';
+  h+='<h3>Symptoms &amp; patterns</h3>';
+  var any=false;
+  if(Object.keys(sym).length){h+='<p><b>Most noted symptoms (days):</b> '+topList(sym,8)+'.</p>';any=true}
+  if(cr.length){h+='<p><b>Cramps:</b> rated on '+cr.length+' day'+(cr.length===1?'':'s')+', felt on '+cdays+(cdays===1?' day':(cdays?' days':' of them'))+(cdays?' (average '+avg2(cr.filter(function(x){return x>0}))+' of 5 on those days, peak '+peakC+' of 5)':'')+'.</p>';any=true}
+  if(Object.keys(mood).length){h+='<p><b>Moods noted (days):</b> '+topList(mood,5)+'.</p>';any=true}
+  if(en.length){h+='<p><b>Energy:</b> averaged '+avg2(en)+' of 5 across '+en.length+' rated days.</p>';any=true}
+  if(spot.length){h+='<p><b>Spotting outside a period:</b> '+spot.slice(-12).map(function(d){return esc(fmt(d))}).join(', ')+'.</p>';any=true}
+  if(!any)h+='<p>No symptoms, moods or ratings have been noted in this period.</p>';
+
+  var flags=[];
+  rows.forEach(function(r){
+    if(r.len!==null&&r.len<21)flags.push('The cycle beginning '+esc(fmt(r.start))+' was short ('+r.len+' days).');
+    if(r.len!==null&&r.len>35)flags.push('The cycle beginning '+esc(fmt(r.start))+' was long ('+r.len+' days).');
+    if(r.bloom>7)flags.push('Bleeding beginning '+esc(fmt(r.start))+' lasted '+r.bloom+' days.');
+    if(r.heavy>=3)flags.push('Heavy flow was noted on '+r.heavy+' days of the period beginning '+esc(fmt(r.start))+'.');
+  });
+  if(lens.length>=3&&Math.max.apply(null,lens)-Math.min.apply(null,lens)>7)flags.push('Cycle length varied by '+(Math.max.apply(null,lens)-Math.min.apply(null,lens))+' days ('+Math.min.apply(null,lens)+' to '+Math.max.apply(null,lens)+').');
+  if(hi)flags.push('Cramps were rated 4 or 5 out of 5 on '+hi+' day'+(hi>1?'s':'')+'.');
+  if(spot.length)flags.push('Spotting was noted outside a period on '+spot.length+' day'+(spot.length>1?'s':'')+'.');
+  if(since>45)flags.push('It has been '+since+' days since my last period began.');
+  h+='<h3>Worth mentioning</h3>';
+  h+=flags.length?'<ul>'+flags.map(function(f){return '<li>'+f+'</li>'}).join('')+'</ul><p style="font-size:12px;color:#7a6470"><i>These points come from simple checks on my own entries and are not a diagnosis.</i></p>':'<p>Nothing in my records stood out on these checks.</p>';
+
+  if(o.well){
+    var wl=[];
+    if(Object.keys(meds).length)wl.push('<p><b>Medicines &amp; supplements taken (days):</b> '+topList(meds,10)+'.</p>');
+    if(sl.length)wl.push('<p><b>Sleep:</b> averaged '+avg2(sl)+' hours on '+sl.length+' logged nights.</p>');
+    if(wa.length)wl.push('<p><b>Water:</b> averaged '+avg2(wa)+' glasses on '+wa.length+' logged days.</p>');
+    if(moved)wl.push('<p><b>Movement:</b> on '+moved+' day'+(moved>1?'s':'')+'.</p>');
+    if(wl.length)h+='<h3>Medicines &amp; wellness</h3>'+wl.join('');
+  }
+  if(o.notes&&notes.length){
+    h+='<h3>My notes</h3><ul>'+notes.slice(-20).reverse().map(function(d){return '<li><b>'+esc(fmt(d,{month:'short',day:'numeric'}))+':</b> '+esc(S.days[d].note)+'</li>'}).join('')+'</ul>';
+  }
+  h+='<h3>Questions for my provider</h3><div class="sd-line"></div><div class="sd-line"></div><div class="sd-line"></div>';
+  h+='<div class="sd-foot">Kept privately in The Observatory. These are my own records and may be incomplete.</div></div>';
+  return h;
+}
+function avg2(a){return a.length?(a.reduce(function(x,y){return x+y},0)/a.length).toFixed(1):'—'}
+function renderSummary(){
+  var o=sumOpts;
+  var bar='<div class="per-card"><h2>Doctor-visit summary</h2><div class="per-note-t">A clear, printable page of my recent cycles. Private pages are never included.</div>'+
+    '<h3>Cycles to include</h3><div class="per-seg">'+[3,6,12].map(function(n){return '<button data-sn="'+n+'" class="'+(o.n===n?'on':'')+'">Last '+n+'</button>'}).join('')+'</div>'+
+    '<div class="per-frow"><button class="per-chip'+(o.well?' on':'')+'" data-sw="1">Medicines &amp; wellness</button><button class="per-chip'+(o.notes?' on':'')+'" data-snotes="1">My written notes</button></div>'+
+    '<div class="per-sheetbtns"><button data-sclose="1">Close</button><button class="main" data-spdf="1">Save as PDF</button></div>'+
+    '<div class="per-frow" style="justify-content:center"><button class="per-btn" data-sprint="1">Print</button><button class="per-btn" data-scopy="1">Copy as text</button></div></div>';
+  $('#per-sum').innerHTML='<div class="per-sum-wrap">'+bar+buildSummary()+'</div>';
+}
+function openSummary(){renderSummary();$('#per-sum').classList.add('on');$('#per-sum').scrollTop=0}
+function closeSummary(){$('#per-sum').classList.remove('on')}
+$('#per-sum').addEventListener('click',function(ev){
+  var b=ev.target.closest('button');if(!b)return;
+  var top=$('#per-sum').scrollTop;
+  if(b.hasAttribute('data-sn')){sumOpts.n=+b.getAttribute('data-sn')}
+  else if(b.hasAttribute('data-sw')){sumOpts.well=!sumOpts.well}
+  else if(b.hasAttribute('data-snotes')){sumOpts.notes=!sumOpts.notes}
+  else if(b.hasAttribute('data-sclose')){closeSummary();return}
+  else if(b.hasAttribute('data-sprint')){
+    $('#per-print').innerHTML=buildSummary();
+    try{window.print()}catch(e){toast('Printing is not available here. Try Save as PDF')}
+    return;
+  }else if(b.hasAttribute('data-spdf')){
+    try{
+      var tmp=document.createElement('div');tmp.innerHTML=buildSummary();
+      var pdf=makePDF(tmp.firstChild,'Cycle summary');
+      deliverFile('observatory-summary-'+today()+'.pdf','application/pdf',pdf,'Cycle summary','PDF saved');
+    }catch(e){toast('Could not make the PDF')}
+    return;
+  }else if(b.hasAttribute('data-scopy')){
+    var tmp2=document.createElement('div');tmp2.innerHTML=buildSummary();
+    copyText(tmp2.innerText||tmp2.textContent);return;
+  }else return;
+  renderSummary();$('#per-sum').scrollTop=top;
+});
+
+/* ---------- veil (PIN) ---------- */
+function hash(p){var h=5381,s='per-moon|'+p;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return String(h)}
+var pinBuf='',pinCb=null,pinCancelable=false;
+(function(){
+  var pad_=$('#per-pad'),h='';
+  [1,2,3,4,5,6,7,8,9].forEach(function(n){h+='<button data-k="'+n+'">'+n+'</button>'});
+  h+='<button class="ghost"></button><button data-k="0">0</button><button data-k="x" aria-label="Delete">⌫</button>';
+  pad_.innerHTML=h;
+  pad_.addEventListener('click',function(ev){
+    var b=ev.target.closest('button');if(!b||!b.hasAttribute('data-k'))return;
+    var k=b.getAttribute('data-k');
+    if(k==='x')pinBuf=pinBuf.slice(0,-1);else if(pinBuf.length<4)pinBuf+=k;
+    drawDots();
+    if(pinBuf.length===4){
+      var p=pinBuf;pinBuf='';
+      setTimeout(function(){
+        var ok=pinCb&&pinCb(p);
+        if(ok===false){var d=$('#per-dots');d.classList.add('per-shake');setTimeout(function(){d.classList.remove('per-shake')},400)}
+        drawDots();
+      },120);
+    }
+  });
+  $('#per-lock-cancel').onclick=hideLock;
+})();
+function drawDots(){[].forEach.call($('#per-dots').children,function(d,i){d.classList.toggle('f',i<pinBuf.length)})}
+function askPin(title,sub,cb,cancelable){
+  pinBuf='';pinCb=cb;pinCancelable=!!cancelable;
+  $('#per-lock-t').textContent=title;$('#per-lock-s').textContent=sub;
+  $('#per-lock-cancel').style.display=cancelable?'block':'none';
+  drawDots();$('#per-lock').classList.add('on');
+}
+function hideLock(){$('#per-lock').classList.remove('on');pinBuf='';pinCb=null}
+function showLock(){
+  if(!S.pin)return;
+  closeSheet();
+  askPin('The Veil','Whisper your four-digit secret',function(p){
+    if(hash(p)===S.pin){hideLock();return true}return false;
+  },false);
+}
+function setPin(){
+  askPin('Draw a veil','Choose a four-digit code',function(p1){
+    askPin('Once more','Repeat the code to seal it',function(p2){
+      if(p1===p2){S.pin=hash(p1);save();hideLock();renderBook();toast('The veil is drawn');return true}
+      toast('Those did not match');return false;
+    },true);
+    return true;
+  },true);
+}
+document.addEventListener('visibilitychange',function(){if(document.hidden&&S.pin)showLock()});
+
+/* ---------- tabs ---------- */
+var tab='almanac';
+function setTab(t){
+  tab=t;
+  [].forEach.call(document.querySelectorAll('.per-tabs button'),function(b){b.classList.toggle('on',b.getAttribute('data-tab')===t)});
+  ['almanac','well','letters','stars','book'].forEach(function(n){$('#per-v-'+n).classList.toggle('on',n===t)});
+  $('#per-fab').style.display=t==='almanac'?'block':'none';
+  if(t==='stars')renderStars();if(t==='book')renderBook();if(t==='well'){wday=today();wedit=false;renderWellness()}if(t==='letters')renderLetters();if(t==='almanac')refresh();
+  window.scrollTo(0,0);
+}
+[].forEach.call(document.querySelectorAll('.per-tabs button'),function(b){b.onclick=function(){setTab(b.getAttribute('data-tab'))}});
+function refresh(keepBook){
+  renderRemind();renderBackup();renderGlance();renderHero();renderCal();
+  if(tab==='stars')renderStars();
+  if(tab==='well')renderWellness();
+  if(tab==='letters')renderLetters();
+  if(tab==='book'&&!keepBook)renderBook();
+}
+
+/* ---------- icon for Home Screen ---------- */
+function makeIcon(){
+  try{
+    var c=document.createElement('canvas');c.width=c.height=180;var x=c.getContext('2d');
+    var g=x.createLinearGradient(0,0,0,180);g.addColorStop(0,'#1b1740');g.addColorStop(.7,'#4a2f66');g.addColorStop(1,'#8a4f78');
+    x.fillStyle=g;x.fillRect(0,0,180,180);
+    x.fillStyle='rgba(255,244,210,.85)';[[24,30,1.8],[62,16,1.3],[118,26,1.5],[150,60,1.8],[20,84,1.4],[100,12,1.2],[165,100,1.4],[40,58,1.2]].forEach(function(s){x.beginPath();x.arc(s[0],s[1],s[2],0,7);x.fill()});
+    function spark(cx,cy,r,col){var k=r*.26;x.beginPath();x.moveTo(cx,cy-r);x.quadraticCurveTo(cx+k,cy-k,cx+r,cy);x.quadraticCurveTo(cx+k,cy+k,cx,cy+r);x.quadraticCurveTo(cx-k,cy+k,cx-r,cy);x.quadraticCurveTo(cx-k,cy-k,cx,cy-r);x.fillStyle=col;x.fill()}
+    spark(140,34,11,'#ffe9b8');spark(34,50,6,'#f7d6e0');
+    /* telescope through the slit */
+    x.save();x.translate(94,108);x.rotate(-0.72);
+    x.fillStyle='#e8c98a';x.fillRect(-9,-62,18,56);x.fillStyle='#c9a35e';x.fillRect(-11,-66,22,8);x.fillRect(-7,-14,14,6);
+    x.restore();
+    /* dome */
+    var dg=x.createLinearGradient(40,70,140,140);dg.addColorStop(0,'#f6c3d1');dg.addColorStop(1,'#c8708c');
+    x.beginPath();x.arc(90,128,50,Math.PI,0);x.closePath();x.fillStyle=dg;x.fill();
+    x.lineWidth=2;x.strokeStyle='#f0d58f';x.stroke();
+    /* slit */
+    x.beginPath();x.moveTo(84,79);x.lineTo(96,79);x.lineTo(104,128);x.lineTo(76,128);x.closePath();
+    var sg=x.createLinearGradient(0,79,0,128);sg.addColorStop(0,'#241d4e');sg.addColorStop(1,'#3a2a62');x.fillStyle=sg;x.fill();
+    /* telescope tip peeks over slit */
+    x.save();x.translate(94,108);x.rotate(-0.72);x.fillStyle='#e8c98a';x.fillRect(-9,-62,18,40);x.fillStyle='#c9a35e';x.fillRect(-11,-66,22,8);x.restore();
+    /* base */
+    x.fillStyle='#f0d58f';x.fillRect(32,128,116,10);
+    x.fillStyle='#3b2a5a';x.fillRect(38,138,104,26);
+    x.fillStyle='#f0d58f';x.fillRect(80,146,20,18);
+    $('#per-icon').href=c.toDataURL('image/png');
+  }catch(e){}
+}
+
+/* ---------- start ---------- */
+(function(){for(var i=0;i<8;i++){var p=document.createElement('span');p.className='per-petal';p.style.left=(5+i*12+Math.random()*6)+'%';p.style.animationDuration=(16+Math.random()*12)+'s';p.style.animationDelay=(-Math.random()*24)+'s';p.style.transform='scale('+(.7+Math.random()*.7)+')';p.setAttribute('aria-hidden','true');document.body.appendChild(p)}})();
+if(migrated)save();
+applyTheme();if(location.protocol==='file:')makeIcon();refresh();
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){try{navigator.serviceWorker.register('sw.js').catch(function(){})}catch(e){}}
+if(S.pin)showLock();
+})();
+</script>
+</body>
+</html>
